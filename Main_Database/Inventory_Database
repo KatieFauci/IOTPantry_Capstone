@@ -1,0 +1,29 @@
+/*
+IOT Pantry Capstone 2
+By:
+Katherine Fauci
+Erik Rodriguez
+Keshawn Smith
+Fall 2020
+*/
+
+drop database if exists Inventory; /*Deletes database*/
+create database Inventory; /*Creates new database*/
+use Inventory; /*Brings focus to Inventory database*/
+
+ /*Creates new table for schema*/
+create table Items (
+  product_name varchar(128) not null,
+  input_date varchar(11) not null,
+  expiration_date varchar(11) not null,
+  frequency_tag smallint(20) not null,
+  barcode_num smallint(20) not null,
+  num_items smallint(20) not null,
+  food_group varchar(50) not null
+);
+
+create table Shopping_List (
+  product_name varchar(128) not null,
+  food_group varchar(50),
+  amount smallint(50)
+);
