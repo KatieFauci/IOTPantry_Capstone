@@ -63,10 +63,10 @@ inventory.grid(row=0, column=0, columnspan=2, sticky="nesw")
 shopList.grid(row=0, column=2, columnspan=2, sticky="nesw")
 recipies.grid(row=0, column=4, columnspan=2, sticky="nesw")
 
-canvas.grid(row=1,column=0, columnspan=9)
+canvas.grid(row=1,column=0, columnspan=6)
 
 tb.grid(row=8, column=3)
-scanIN.grid(row=8, column=5, sticky="nesw")
+scanIN.grid(row=8, column=4, sticky="nesw")
 scanOUT.grid(row=8, column=5, sticky="nesw")
 
 root.mainloop() # makes the UI
