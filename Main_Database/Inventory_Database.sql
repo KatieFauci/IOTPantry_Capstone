@@ -3,7 +3,7 @@ IOT Pantry Capstone 2
 By:
 Katherine Fauci
 Erik Rodriguez
-Keshawn The Goat
+Keshawn Smith
 Fall 2020
 */
 
