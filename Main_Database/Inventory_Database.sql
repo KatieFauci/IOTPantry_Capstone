@@ -7,57 +7,63 @@ Keshawn The Goat
 Fall 2020
 */
 
-drop database if exists Inventory; /*Deletes database*/
-create database Inventory; /*Creates new database*/
-use Inventory; /*Brings focus to Inventory database*/
+DROP DATABASE IF EXISTS Inventory; /*Deletes database*/
+CREATE DATABASE Inventory; /*Creates new database*/
+USE Inventory; /*Brings focus to Inventory database*/
 
  /*Creates new table for schema*/
-create table Items (
-  type_id bigint(255) not null,
-  product_name varchar(128) not null,
-  input_date varchar(25) not null,
-  expiration_date varchar(11) not null,
-  UID varchar(128) not null,
-  barcode_num bigint(255) not null,
-  num_items smallint(20) not null,
-  food_group varchar(50) not null,
-  primary key (barcode_num, type_id)
+CREATE TABLE Items (
+  item_id BIGINT(255) NOT NULL,
+  type_id BIGINT(255) NOT NULL,
+  product_name VARCHAR(128) NOT NULL,
+  barcode_num BIGINT(255) NOT NULL,
+  UID VARCHAR(128) NOT NULL,
+  input_date VARCHAR(25) NOT NULL,
+  expiration_date VARCHAR(11) NOT NULL,
+  num_items SMALLINT(20) NOT NULL,
+  food_group VARCHAR(50) NOT NULL,
+  PRIMARY KEY (item_id, type_id)
 );
 
-create table Food_type (
-  type_id bigint(255) not null,
-  type varchar (128) not null,
-  primary key (type_id)
+/* Field will be used for sorting items in the inventory */
+CREATE TABLE Food_type (
+  type_id BIGINT(255) NOT NULL,
+  type VARCHAR (128) NOT NULL,
+  PRIMARY KEY (type_id)
 );
 
-create table Shopping_List (
-  item_id bigint(255) not null,
-  product_name varchar(128) not null,
-  food_group varchar(50), not null,
-  amount varchar(128) not null,
-  primary key (item_id, product_name, amount)
+CREATE TABLE Shopping_List (
+  list_id BIGINT(255) NOT NULL,
+  item_id BIGINT(255) NOT NULL,
+  type_id BIGINT(255) NOT NULL,
+  product_name VARCHAR(128) NOT NULL,
+  food_group VARCHAR(50) NOT NULL,
+  amount VARCHAR(128) NOT NULL,
+  PRIMARY KEY (list_id, item_id, type_id)
 );
 
-create table recipe (
-  recipe_id bigint(255) not null,
-  recipe_name varchar(128) not null,
-  recipe_time varchar(128) not null,
-  primary key (recipe_id)
+CREATE TABLE recipe (
+  recipe_id BIGINT(255) NOT NULL,
+  recipe_name VARCHAR(128) NOT NULL,
+  recipe_time VARCHAR(128) NOT NULL,
+  PRIMARY KEY (recipe_id)
 );
 
-create table steps (
-  recipe_id bigint(255) not null,
-  step_id smallint(50) not null,
-  step varchar(1024) not null,
-  primary key (recipe_id, step_id)
+CREATE TABLE steps (
+  recipe_id BIGINT(255) NOT NULL,
+  step_id SMALLINT(50) NOT NULL,
+  step VARCHAR(1024) NOT NULL,
+  PRIMARY KEY (recipe_id, step_id)
 );
 
-create table ingrediants (
-  recipe_id bigint(255) not null,
-  ingrediant_id smallint(50) not null,
-  item_id bigint(255) not null,
-  amount varchar(128) not null,
-  primary key(recipe_id, ingrediant_id, item_id)
+CREATE TABLE ingrediants (
+  recipe_id BIGINT(255) NOT NULL,
+  ingrediant_id SMALLINT(50) NOT NULL,
+  item_id BIGINT(255) NOT NULL,
+  amount VARCHAR(128) NOT NULL,
+  PRIMARY KEY(recipe_id, ingrediant_id, item_id)
 )
 
+/* Sample Data
 INSERT INTO Items VALUES ("Tylonol", CURRENT_TIMESTAMP, "08/2020", "32,213,205,74", 100029185, 1, "Medicine");
+*/
