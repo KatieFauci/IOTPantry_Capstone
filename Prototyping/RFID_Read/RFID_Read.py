@@ -14,7 +14,7 @@ continue_read = True
 #Clears information when there is no more to read
 def end_read(signal,frame):
     global continue_read
-    print "Press Control C to end tag reading"
+    print ("Press Control C to end tag reading")
     continue_read = False
     GPIO.cleanup()
 
@@ -23,21 +23,21 @@ signal.signal(signal.SIGINT, end_read) #Define a custom handler to be executed w
 RFID_Reader = MFRC522.MFRC522() #Object class for the RFID MFRC522 class
 
 #User messages
-print "Welcome to the Smart Pantry Inventory System!"
-print "If you are scanning a new item, please scan barcode, then tag and stick tag to product."
-print "If you are scanning an already inputed product, just scan the attached tag."
-print "Press Control-C to end scanning."
+print ("Welcome to the Smart Pantry Inventory System!")
+print ("If you are scanning a new item, please scan barcode, then tag and stick tag to product.")
+print ("If you are scanning an already inputed product, just scan the attached tag.")
+print ("Press Control-C to end scanning.")
 
 while continue_read:
-    (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL) #Scans for tags
+    (status,TagType) = RFID_Reader.MFRC522_Request(RFID_Reader.PICC_REQIDL) #Scans for tags
     
-    if status == MIFAREReader.MI_OK: #Checks if tag is present
-        print "Tag detected"
+    if status == RFID_Reader.MI_OK: #Checks if tag is present
+        print ("Tag detected")
 
-    (status,uid) = MIFAREReader.MFRC522_Anticoll() #Pulls RFID from tag
+    (status,uid) = RFID_Reader.MFRC522_Anticoll() #Pulls RFID from tag
 
-    if status == MIFAREReader.MI_OK: #If the tag is valid
-        print "Card read RFID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
+    if status == RFID_Reader.MI_OK: #If the tag is valid
+        print ("Card read RFID: %s,%s,%s,%s") % (uid[0], uid[1], uid[2], uid[3])
 
-        MIFAREReader.MFRC522_SelectTag(uid) #Selects the tag that was scanned
+        RFID_Reader.MFRC522_SelectTag(uid) #Selects the tag that was scanned
 
