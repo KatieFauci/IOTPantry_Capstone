@@ -3,5 +3,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World! Welcome to our server'
+    return 'Welcome to our IOT Pantry System'
+
 
