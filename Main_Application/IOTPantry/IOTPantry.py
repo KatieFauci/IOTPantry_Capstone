@@ -5,8 +5,14 @@ import sqlite3
 from datetime import date
 import addfunc
 import delfunc
+import invfunc
 
+
+# GLOBAL VARIABLES
 END = 50
+curScreen = 1
+curInv = []
+invPage = 1
 
 #------------------------------------
 # Screen Configuration Functions
@@ -661,6 +667,19 @@ def configure_addEntry():
     button_add.configure(pady="0")
     button_add.configure(text='''Add to Inventory''')
     button_add.configure(command = add_inv)
+
+    button_closeAdd = tk.Button(frame_addEntry)
+    button_closeAdd.place(relx=0.863, rely=0.025, height=25, width=25)
+    button_closeAdd.configure(activebackground="#ececec")
+    button_closeAdd.configure(activeforeground="#000000")
+    button_closeAdd.configure(background="#9e9e9e")
+    button_closeAdd.configure(disabledforeground="#a3a3a3")
+    button_closeAdd.configure(foreground="#000000")
+    button_closeAdd.configure(highlightbackground="#d9d9d9")
+    button_closeAdd.configure(highlightcolor="black")
+    button_closeAdd.configure(pady="0")
+    button_closeAdd.configure(text='''X''')
+    button_closeAdd.configure(command = return_curScreen)
 def configure_delEntry():
     frame_del.place(relx=0.371, rely=0.183, relheight=0.542, relwidth=0.271)
     frame_del.configure(relief='groove')
@@ -685,7 +704,7 @@ def configure_delEntry():
     label_delName.configure(disabledforeground="#a3a3a3")
     label_delName.configure(foreground="#000000")
     label_delName.configure(justify='left')
-    label_delName.configure(text='''Name''')
+    label_delName.configure(text='''''')
 
     entry_numDelete.place(relx=0.578, rely=0.646, height=20, relwidth=0.159)
     entry_numDelete.configure(background="white")
@@ -699,28 +718,28 @@ def configure_delEntry():
     label_barDelete.configure(disabledforeground="#a3a3a3")
     label_barDelete.configure(foreground="#000000")
     label_barDelete.configure(justify='left')
-    label_barDelete.configure(text='''Barcode''')
+    label_barDelete.configure(text='''''')
 
     label_expDel.place(relx=0.144, rely=0.277, height=21, width=200)
     label_expDel.configure(background="#d9d9d9")
     label_expDel.configure(disabledforeground="#a3a3a3")
     label_expDel.configure(foreground="#000000")
     label_expDel.configure(justify='left')
-    label_expDel.configure(text='''Expiration Date''')
+    label_expDel.configure(text='''''')
 
     label_entDate.place(relx=0.144, rely=0.338, height=21, width=200)
     label_entDate.configure(background="#d9d9d9")
     label_entDate.configure(disabledforeground="#a3a3a3")
     label_entDate.configure(foreground="#000000")
     label_entDate.configure(justify='left')
-    label_entDate.configure(text='''Entry Date''')
+    label_entDate.configure(text='''''')
 
     label_curNum.place(relx=0.144, rely=0.4, height=21, width=200)
     label_curNum.configure(background="#d9d9d9")
     label_curNum.configure(disabledforeground="#a3a3a3")
     label_curNum.configure(foreground="#000000")
     label_curNum.configure(justify='left')
-    label_curNum.configure(text='''Current Quantity''')
+    label_curNum.configure(text='''''')
 
     label_numDel = tk.Label(frame_del)
     label_numDel.place(relx=0.144, rely=0.646, height=21, width=114)
@@ -730,22 +749,91 @@ def configure_delEntry():
     label_numDel.configure(foreground="#000000")
     label_numDel.configure(text='''Amount To Remove:''')
 
+    button_closeDel = tk.Button(frame_del)
+    button_closeDel.place(relx=0.884, rely=0.031, height=25, width=25)
+    button_closeDel.configure(activebackground="#ececec")
+    button_closeDel.configure(activeforeground="#000000")
+    button_closeDel.configure(background="#acacac")
+    button_closeDel.configure(disabledforeground="#a3a3a3")
+    button_closeDel.configure(foreground="#000000")
+    button_closeDel.configure(highlightbackground="#d9d9d9")
+    button_closeDel.configure(highlightcolor="black")
+    button_closeDel.configure(pady="0")
+    button_closeDel.configure(text='''X''')
+    button_closeDel.configure(command = return_curScreen)
+
+    label_userInst.place(relx=0.144, rely=0.062, height=21, width=200)
+    label_userInst.configure(background="#d9d9d9")
+    label_userInst.configure(disabledforeground="#a3a3a3")
+    label_userInst.configure(foreground="#000000")
+    label_userInst.configure(text='''Scan An Item''')
+
 #-------------------------------------
 # Lift screens
 #-------------------------------------
 def focus_inv():
     frame_invMain.lift()
     frame_inv_search.lift()
+    curScreen = 1
 def focus_rec():
     frame_rec_menu.lift()
     frame_rec_main.lift()
+    curScreen = 2
 def focus_sl():
     frame_sl_main.lift()
+    curScreen = 3
+def return_curScreen():
+    clear_pop()
+    if (curScreen == 1):
+        focus_inv()
+    elif (curScreen == 2):
+        focus_rec()
+    elif (curScreen == 3):
+        focus_sl()
+
+#------------------------------------
+# Formating Functions
+#------------------------------------
+def clear_pop():
+    entry_code.delete(0, END)
+    Entry_prod_name.delete(0, END)
+    Entry_foodGroup.delete(0, END)
+    Entry_expd.delete(0, END)
+    entry_numItems.delete(0, END)
+    label_delName.configure(text ="")
+    label_barDelete.configure(text = "")
+    label_entDate.configure(text = "")
+    label_expDel.configure(text = "")
+    label_curNum.configure(text = "")
+def fill_inv():
+    # get current invenotyr
+    curRow=0
+    curCol=0
+    H = 30
+    W = 125
+    X = 0.264 #inc by .065
+    Y = 0.156 #inc by 0.137
+
+
+    button_inv_nameAct = tk.Button(frame_invMain)
+    label_inv_quanData = tk.Label(frame_invMain)
+    label_inv_fgData = tk.Label(frame_invMain)
+    label_inv_endData = tk.Label(frame_invMain)
+    label_inv_exdData = tk.Label(frame_invMain)
+    label_inv_barcData = tk.Label(frame_invMain)
+    button_inv_nameAct.place(relx=0.127, rely=0.156, height=30, width=125)
+    label_inv_quanData.place(relx=0.264, rely=0.156, height=30, width=124)
+    label_inv_fgData.place(relx=0.4, rely=0.156, height=30, width=125)
+    label_inv_endData.place(relx=0.537, rely=0.156, height=30, width=125)
+    label_inv_exdData.place(relx=0.674, rely=0.156, height=30, width=125)
+    label_inv_barcData.place(relx=0.811, rely=0.156, height=30, width=125)
+
 
 #-------------------------------
 # Control Functions
 #-------------------------------
 def focus_barEntry():
+    return_curScreen()
     frame_addEntry.lift()
     # Clear the entry box
     entry_code.delete(0,20)
@@ -758,32 +846,45 @@ def focus_barEntry():
     Entry_expd.delete(0, END)
     entry_numItems.delete(0, END)
 def focus_delEntry():
+    return_curScreen()
     frame_del.lift()
     # Clear the entry box
     entry_barcode.delete(0,20)
     # put the cursor in the text box
     entry_barcode.focus_set()
     entry_numDelete.delete(0, END)
+    label_userInst.configure(text = '''Scan An Item''')
+    label_userInst.configure(foreground = "#000000")
 def scan_out(event):
     # Get Scanned Code
     code = entry_barcode.get()
     label_delName.configure(text = code)
-    # Pull Data
-    data = addfunc.get_info("items", code, "barcode_num", invdb,"*")
-    # Fill Information
-    label_delName.configure(text = str(data[0][2]))
-    label_barDelete.configure(text = str(data[0][3]))
-    label_entDate.configure(text = "Entry Date: "+str(data[0][5]))
-    label_expDel.configure(text = "Exp Date: "+str(data[0][6]))
-    label_curNum.configure(text = "Quantity:"+str(data[0][7]))
-    # Default number to remove to 1
-    entry_numDelete.insert(0,"1")
+    # Check if already in Inventory
+    data = addfunc.check_inv("items", entry_barcode.get(), invdb)
+    print("\nITEM FOUND? >> "+str(data[0][0]))
+    if (data[0][0] == 1):
+        label_userInst.configure(text='''ITEM FOUND''')
+        label_userInst.configure(foreground = "#008006")
+        # Pull Data
+        data = addfunc.get_info("*","items","barcode_num",str(code), invdb)
+        # Fill Information
+        label_delName.configure(text = str(data[0][2]))
+        label_barDelete.configure(text = str(data[0][3]))
+        label_entDate.configure(text = "Entry Date: "+str(data[0][5]))
+        label_expDel.configure(text = "Exp Date: "+str(data[0][6]))
+        label_curNum.configure(text = "Current Quantity:"+str(data[0][7]))
+        # Default number to remove to 1
+        entry_numDelete.insert(0,"1")
+    else:
+        # Alert user the item was not FOUND
+        label_userInst.configure(text = '''ITEM NOT FOUND''')
+        label_userInst.configure(foreground = "#df0005")
 def scan_in(event):
     # Get code scanned
     code = entry_code.get()
     entry_code.configure(text=code)
     # Pull data from ref_database
-    data = addfunc.get_info("items", code, "barcode", refdb,"*")
+    data = addfunc.get_info("*", "items", "barcode", code, refdb)
     # Fill entries
     Entry_prod_name.insert(0, str(data[0][1]))
     Entry_foodGroup.insert(0, str(data[0][2]))
@@ -807,7 +908,6 @@ def add_inv():
         print(" << item added >> ")
     else:   # increment count acordint to amount entered
         addfunc.inc_count(invdb, entry_code.get(), entry_numItems.get())
-
     # Clear entries
     entry_code.delete(0, END)
     Entry_prod_name.delete(0, END)
@@ -824,20 +924,21 @@ def delete_inv():
     if(data[0][0] == 1):
         print("\n ITEM FOUND \n")
         # get current number
-        data = addfunc.get_info("items", entry_barcode.get(),invdb,"num_items")
+        data = addfunc.get_info("num_items","items","barcode_num", str(entry_barcode.get()), invdb)
         curNum = int(data[0][0])
         incNum = int(entry_numDelete.get())
+        code = str(entry_barcode.get())
         # if Quantity = 1 OR quantity = numRemove
-        if ((currNum == 1) or (currNum == incNum)):
-            delfunc.remove_entry()
+        if ((curNum == 1) or (incNum >= curNum)):
+            delfunc.remove_entry("items", "barcode_num",code, invdb)
+            return_curScreen()
         else: #increment count
             delfunc.inc_count(invdb,entry_barcode.get(),incNum)
-
+            print(" \n\n DELETE DONE \n\n")
+            return_curScreen()
     else:
         print("\nITEM NOT IN INVENTORY \n")
 
-    print(" \n\n DELETE DONE \n\n")
-    focus_inv()
 
 #----------------------------------------
 # DRIVING CODE
@@ -876,6 +977,8 @@ label_barDelete = tk.Label(frame_del)
 label_expDel = tk.Label(frame_del)
 label_entDate = tk.Label(frame_del)
 label_curNum = tk.Label(frame_del)
+label_userInst = tk.Label(frame_del)
+
 
 # Functional Components of the item entry popup
 entry_code = tk.Entry(frame_addEntry)
@@ -897,8 +1000,8 @@ configure_delEntry()
 focus_inv()
 
 # Connect to databases
-invdb = sqlite3.connect('C:\sqlite\inventory.db')
-refdb = sqlite3.connect('C:\sqlite\Iref.db')
+invdb = sqlite3.connect('inventory.db')
+refdb = sqlite3.connect('ref.db')
 
 # Start GUI
 root.mainloop()

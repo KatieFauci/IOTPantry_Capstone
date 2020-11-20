@@ -13,7 +13,7 @@ def get_new_id(table, db):
 
 
 #pulls an entry from the reference database based on the barcode
-def get_info(table, code, field,db, pull):
+def get_info(pull, table, field, code, db):
     print("\nDATABASE >> ")
     print(db)
     print("\n")
@@ -32,6 +32,7 @@ def get_info(table, code, field,db, pull):
 def check_inv(table, code, db):
     c = db.cursor()
     command = 'SELECT EXISTS(SELECT * FROM '+table+' WHERE barcode_num="'+code+'");'
+    print(command)
     c.execute(command)
     data = c.fetchall()
     return data
@@ -70,6 +71,7 @@ def pull_UID(db, code):
     return data[0][0]
 
 
+# increases the count of an item
 def inc_count(db, code, incNum):
     # get current Quantity
     command = 'SELECT num_items FROM items WHERE barcode_num = "'+code+'";'
