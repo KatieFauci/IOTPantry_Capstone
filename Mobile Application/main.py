@@ -421,9 +421,11 @@ class Steps(BoxLayout):
 
         data4 = '\n\n'.join(str(line) for line in data4)
 
+        self.add_widget(Label())
         self.add_widget(Label(text=str(data4),
                               pos_hint={'center_x': .5}))
 
+        self.add_widget(Label())
         self.add_widget(Label())
 
         self.Re_Button = Button(text="Return",
