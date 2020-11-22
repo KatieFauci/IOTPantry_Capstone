@@ -6,6 +6,7 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 #from kivy.config import Config
 #from kivy.uix.anchorlayout import AnchorLayout
 #from kivy.uix.floatlayout import FloatLayout
@@ -28,7 +29,7 @@ class LoginScreen(BoxLayout):
         super().__init__(**kwargs)
 
         #Screen background color
-        Window.clearcolor = (0.70, 0.70, 0.70, 1)
+        Window.clearcolor = (0.40, 0.40, 0.40, 1)
 
         self.add_widget(Label())
 
@@ -76,8 +77,8 @@ class LoginScreen(BoxLayout):
         username = self.username.text
         password = self.password.text
 
-        if username == "Test":
-            if password == "test":
+        if username == "IOTPantry":
+            if password == "smartpantry":
                 IOT_app.screen_manager.current = "HomePage"
             else:
                 IOT_app.screen_manager.current = "Error"
@@ -180,47 +181,77 @@ class HomePage(BoxLayout):
 
 
 #Pantry Inventory Screen
-class InventoryPage(GridLayout):
+class InventoryPage(FloatLayout):
     # Updates info on HomePage
-
-    cols = 3
 
     def update_info(self, message):
         self.message.text = message
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.word_dict = {}
 
-        self.add_widget(Label(text="Name"))
-        self.add_widget(Label(text="Quantity"))
-        self.add_widget(Label(text="Expiration"))
+        self.add_widget(Label(text="Product Name",
+                              size_hint=(1, 2),
+                              pos_hint={'center_x': .25, 'center_y': .9},
+                              bold=True))
 
-        invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Databases\\inventory.db')
+        self.add_widget(Label(text="Quantity",
+                              size_hint=(.25, .46),
+                              pos_hint={'center_x': .55, 'center_y': .9},
+                              bold=True))
+
+        self.add_widget(Label(text="Expiration",
+                              size_hint=(.25, .46),
+                              pos_hint={'center_x': .75, 'center_y': .9},
+                              bold=True))
+
+        invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
         c = invdb.cursor()
-        c.execute("SELECT product_name FROM items;")
+        c.execute("SELECT product_name FROM items")
         data = c.fetchall()
-        c.execute("SELECT num_items FROM items;")
-        data1 = c.fetchall()
-        c.execute("SELECT expiration_date FROM items;")
+        data = list(data)
+
+        data = '\n'.join(str(line)for line in data)
+        print(data)
+
+        c.execute("SELECT num_items FROM items")
         data2 = c.fetchall()
 
+
+        data2 = '\n'.join(str(line) for line in data2)
+
+
+        c.execute("SELECT expiration_date FROM items")
+        data3 = c.fetchall()
+        data3 = list(data3)
+
+        data3 = '\n'.join(str(line) for line in data3)
+
+
+
         self.add_widget(Label(text=str(data),
-                              size_hint=(1, .36)))
-
-        self.add_widget((Label(text=str(data1),
-                               size_hint=(1, .36))))
-
+                              size_hint_x= None,
+                              halign= 'left',
+                              valign= 'middle',
+                              pos_hint={'center_x': .25}))
 
         self.add_widget(Label(text=str(data2),
-                              size_hint=(1, .36)))
+                              pos_hint={'center_x': .55}))
+
+        self.add_widget(Label(text=str(data3),
+                              pos_hint={'center_x': .75}))
+
+        self.add_widget(Label())
+        self.add_widget(Label())
 
         self.Re_Button = Button(text="Return",
-                                size_hint=(.25, .46),
-                                pos_hint={'right': .62})
+                                size_hint=(.25, .26),
+                                pos_hint={'center_x': .5, 'center_y': .1})
         self.Re_Button.bind(on_press=self.ReturnBack)
         self.add_widget(Label())
         self.add_widget(self.Re_Button)
-        self.add_widget(Label())
+
 
 
 
@@ -233,7 +264,7 @@ class InventoryPage(GridLayout):
 #Shopping List Screen
 class ShoppingListPage(GridLayout):
 
-    cols= 1
+    cols= 3
 
     # Updates info on HomePage
     def update_info(self, message):
@@ -242,17 +273,66 @@ class ShoppingListPage(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        invdbshop = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Databases\\inventory.db')
+        self.add_widget(Label())
+
+        self.add_widget(Label(text="Shopping List",
+                              font_size='40sp',
+                              size_hint=(1, .36),
+                              bold=True))
+
+        self.add_widget(Label())
+
+        self.add_widget(Label(text="Item List Number",
+                              size_hint=(1, 2),
+                              pos_hint={'center_x': .25, 'center_y': .9},
+                              bold=True))
+
+        self.add_widget(Label(text="Product Name",
+                              size_hint=(.25, .46),
+                              pos_hint={'center_x': .55, 'center_y': .9},
+                              bold=True))
+
+        self.add_widget(Label(text="Notes",
+                              size_hint=(.25, .46),
+                              pos_hint={'center_x': .75, 'center_y': .9},
+                              bold=True))
+
+        invdbshop = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
         c = invdbshop.cursor()
-        c.execute("SELECT * FROM shopping_list;")
+        c.execute("SELECT list_id FROM shopping_list")
         data = c.fetchall()
+        data = list(data)
+
+        data = '\n'.join(str(line) for line in data)
+        print(data)
+
+        c.execute("SELECT product_name FROM shopping_list")
+        data2 = c.fetchall()
+
+        data2 = '\n'.join(str(line) for line in data2)
+
+        c.execute("SELECT notes FROM shopping_list")
+        data3 = c.fetchall()
+        data3 = list(data3)
+
+        data3 = '\n'.join(str(line) for line in data3)
 
         self.add_widget(Label(text=str(data),
-                              size_hint=(1, .36)))
+                              pos_hint={'center_x': .25}))
+
+        self.add_widget(Label(text=str(data2),
+                              pos_hint={'center_x': .55}))
+
+        self.add_widget(Label(text=str(data3),
+                              pos_hint={'center_x': .75}))
+
+        self.add_widget(Label())
+        self.add_widget(Label())
+        self.add_widget(Label())
 
         self.Re_Button = Button(text="Return",
-                                size_hint=(.25, .46),
-                                pos_hint={'right': .62})
+                                size_hint=(.25, .26),
+                                pos_hint={'center_x': .5, 'center_y': .1})
         self.Re_Button.bind(on_press=self.ReturnBack)
         self.add_widget(Label())
         self.add_widget(self.Re_Button)
@@ -278,28 +358,86 @@ class RecipePage(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        invdbrec = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Databases\\inventory.db')
+        self.add_widget(Label())
+
+        self.add_widget(Label(text="Recipes",
+                              font_size='40sp',
+                              size_hint=(1, .36),
+                              bold=True))
+
+        invdbrec = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
         c = invdbrec.cursor()
-        c.execute("SELECT * FROM recipe;")
+        c.execute("SELECT recipe_name FROM recipe;")
         data = c.fetchall()
 
-        self.add_widget(Label(text=str(data)))
+        self.recipe = Button(
+            text=str(data),
+            size_hint=(.25, .46),
+            pos_hint={'right': .62})
+        self.recipe.bind(on_press=self.steps_button)
+        self.add_widget(Label())
+        self.add_widget(self.recipe)
+        self.add_widget(Label())
 
         self.add_widget(Label())
 
         self.Re_Button = Button(text="Return",
                                 size_hint=(.25, .46),
-                                pos_hint={'right': .42})
+                                pos_hint={'center_x': .5})
         self.Re_Button.bind(on_press=self.ReturnBack)
         self.add_widget(Label())
         self.add_widget(self.Re_Button)
         self.add_widget(Label())
+        self.add_widget(Label())
 
-
+    def steps_button(self, instance):
+        IOT_app.screen_manager.current = "Steps"
 
     def ReturnBack(self, instance):
         info1 = "Loading Inventory"
         IOT_app.screen_manager.current = "HomePage"
+
+
+class Steps(BoxLayout):
+    orientation = "vertical"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.add_widget(Label())
+
+        self.add_widget(Label(text="Recipes",
+                            font_size='40sp',
+                            size_hint=(1, .36),
+                            bold=True))
+
+        self.add_widget(Label())
+        self.add_widget(Label())
+
+        invdbstep = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
+        c = invdbstep.cursor()
+        c.execute("SELECT step FROM steps;")
+        data4 = c.fetchall()
+
+        data4 = '\n\n'.join(str(line) for line in data4)
+
+        self.add_widget(Label(text=str(data4),
+                              pos_hint={'center_x': .5}))
+
+        self.add_widget(Label())
+
+        self.Re_Button = Button(text="Return",
+                                size_hint=(.25, .46),
+                                pos_hint={'center_x': .5})
+        self.Re_Button.bind(on_press=self.ReturnBack)
+        self.add_widget(Label())
+        self.add_widget(self.Re_Button)
+        self.add_widget(Label())
+        self.add_widget(Label())
+
+    def ReturnBack(self, instance):
+        info5 = "Loading Recipes"
+        IOT_app.screen_manager.current = "Recipe Book"
 
 
 
@@ -337,6 +475,11 @@ class PantryApp(App):
         screen5 = Screen(name="Error")  # Name Screen
         screen5.add_widget(self.Error)  # Add Screen
         self.screen_manager.add_widget(screen5)  # Allow for switching through screen manager class
+
+        self.steps = Steps()  # Define new screen object
+        screen6 = Screen(name="Steps")  # Name Screen
+        screen6.add_widget(self.steps)  # Add Screen
+        self.screen_manager.add_widget(screen6)
 
         return self.screen_manager #Returns screens
 
