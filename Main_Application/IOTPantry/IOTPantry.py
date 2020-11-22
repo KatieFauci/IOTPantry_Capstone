@@ -3,6 +3,7 @@ import tkinter as tk
 import Tcl
 import sqlite3
 from datetime import date
+import math
 import addfunc
 import delfunc
 import invfunc
@@ -10,9 +11,21 @@ import invfunc
 
 # GLOBAL VARIABLES
 END = 50
-curScreen = 1
+CURRENTSCREEN = 1
+CURRENTPAGE = 0
+MAXPERPAGE = 8
+NUMPAGES = 0
+STARTUP = 0
+# Global inventory Variables
 curInv = []
-invPage = 1
+inv_widgets = []
+# Global SL VARIABLES
+# Global recipie variables
+
+# Connect to databases
+invdb = sqlite3.connect('inventory.db')
+refdb = sqlite3.connect('ref.db')
+
 
 #------------------------------------
 # Screen Configuration Functions
@@ -176,7 +189,7 @@ def configure_inv():
     frame_invMain.configure(highlightcolor="black")
 
     label_inv_name = tk.Label(frame_invMain)
-    label_inv_name.place(relx=0.127, rely=0.044, height=30, width=125)
+    label_inv_name.place(relx=0.065, rely=0.044, height=30, width=190)
     label_inv_name.configure(activebackground="#f9f9f9")
     label_inv_name.configure(activeforeground="black")
     label_inv_name.configure(background="#939393")
@@ -241,18 +254,6 @@ def configure_inv():
     label_inv_bar.configure(highlightcolor="black")
     label_inv_bar.configure(text='''Barcode''')
 
-    button_inv_del = tk.Button(frame_invMain)
-    button_inv_del.place(relx=0.049, rely=0.044, height=24, width=47)
-    button_inv_del.configure(activebackground="#ececec")
-    button_inv_del.configure(activeforeground="#000000")
-    button_inv_del.configure(background="#af0101")
-    button_inv_del.configure(disabledforeground="#a3a3a3")
-    button_inv_del.configure(foreground="#000000")
-    button_inv_del.configure(highlightbackground="#d9d9d9")
-    button_inv_del.configure(highlightcolor="black")
-    button_inv_del.configure(pady="0")
-    button_inv_del.configure(text='''Delete''')
-
     button_inv_nameAct = tk.Button(frame_invMain)
     button_inv_nameAct.place(relx=0.127, rely=0.156, height=30, width=125)
     button_inv_nameAct.configure(activebackground="#ececec")
@@ -265,18 +266,6 @@ def configure_inv():
     button_inv_nameAct.configure(pady="0")
     button_inv_nameAct.configure(relief="flat")
     button_inv_nameAct.configure(text='''NAME BUTTON''')
-
-    Checkbutton1 = tk.Checkbutton(frame_invMain)
-    Checkbutton1.place(relx=0.049, rely=0.156, relheight=0.056, relwidth=0.061)
-    Checkbutton1.configure(activebackground="#ececec")
-    Checkbutton1.configure(activeforeground="#000000")
-    Checkbutton1.configure(background="#585670")
-    Checkbutton1.configure(disabledforeground="#a3a3a3")
-    Checkbutton1.configure(foreground="#000000")
-    Checkbutton1.configure(highlightbackground="#d9d9d9")
-    Checkbutton1.configure(highlightcolor="black")
-    Checkbutton1.configure(justify='left')
-    #Checkbutton1.configure(variable=Inventory_support.che72)
 
     label_inv_quanData = tk.Label(frame_invMain)
     label_inv_quanData.place(relx=0.264, rely=0.156, height=30, width=124)
@@ -333,7 +322,6 @@ def configure_inv():
     label_inv_barcData.configure(highlightcolor="black")
     label_inv_barcData.configure(text='''X''')
 
-
     entry_inv_search = tk.Entry(frame_inv_search)
     entry_inv_search.place(relx=0.02, rely=0.3, height=20, relwidth=0.17)
     entry_inv_search.configure(background="white")
@@ -357,43 +345,30 @@ def configure_inv():
     button_inv_search.configure(highlightcolor="black")
     button_inv_search.configure(pady="0")
     button_inv_search.configure(text='''Search''')
-    #
-    #combo_inv_type = tk.Combobox(frame_inv_search)
-    #combo_inv_type.place(relx=0.508, rely=0.3, relheight=0.42
-    #        , relwidth=0.146)
-    #combo_inv_type.configure(textvariable=Inventory_support.combobox)
-    #combo_inv_type.configure(takefocus="")
 
-    #combo_inv_crit = tk.Combobox(frame_inv_search)
-    #combo_inv_crit.place(relx=0.664, rely=0.3, relheight=0.42
-    #        , relwidth=0.14)
-    #combo_inv_crit.configure(textvariable=Inventory_support.combobox)
-    #combo_inv_crit.configure(takefocus="")
+    button_NextPage.place(relx=0.947, rely=0.889, height=40, width=45)
+    button_NextPage.configure(activebackground="#ececec")
+    button_NextPage.configure(activeforeground="#000000")
+    button_NextPage.configure(background="#d9d9d9")
+    button_NextPage.configure(disabledforeground="#a3a3a3")
+    button_NextPage.configure(foreground="#000000")
+    button_NextPage.configure(highlightbackground="#d9d9d9")
+    button_NextPage.configure(highlightcolor="black")
+    button_NextPage.configure(pady="0")
+    button_NextPage.configure(text='''>>''')
+    button_NextPage.configure(command=next_page)
 
-    button_inv_filter = tk.Button(frame_inv_search)
-    button_inv_filter.place(relx=0.82, rely=0.3, height=24, width=70)
-    button_inv_filter.configure(activebackground="#ececec")
-    button_inv_filter.configure(activeforeground="#000000")
-    button_inv_filter.configure(background="#d9d9d9")
-    button_inv_filter.configure(disabledforeground="#a3a3a3")
-    button_inv_filter.configure(foreground="#000000")
-    button_inv_filter.configure(highlightbackground="#d9d9d9")
-    button_inv_filter.configure(highlightcolor="black")
-    button_inv_filter.configure(pady="0")
-    button_inv_filter.configure(text='''Filter''')
-
-    button_inv_CLfilter = tk.Button(frame_inv_search)
-    button_inv_CLfilter.place(relx=0.908, rely=0.3, height=24, width=70)
-
-    button_inv_CLfilter.configure(activebackground="#ececec")
-    button_inv_CLfilter.configure(activeforeground="#000000")
-    button_inv_CLfilter.configure(background="#d9d9d9")
-    button_inv_CLfilter.configure(disabledforeground="#a3a3a3")
-    button_inv_CLfilter.configure(foreground="#000000")
-    button_inv_CLfilter.configure(highlightbackground="#d9d9d9")
-    button_inv_CLfilter.configure(highlightcolor="black")
-    button_inv_CLfilter.configure(pady="0")
-    button_inv_CLfilter.configure(text='''Clear Filter''')
+    button_lastPage.place(relx=0.01, rely=0.889, height=40, width=45)
+    button_lastPage.configure(activebackground="#ececec")
+    button_lastPage.configure(activeforeground="#000000")
+    button_lastPage.configure(background="#d9d9d9")
+    button_lastPage.configure(disabledforeground="#a3a3a3")
+    button_lastPage.configure(foreground="#000000")
+    button_lastPage.configure(highlightbackground="#d9d9d9")
+    button_lastPage.configure(highlightcolor="black")
+    button_lastPage.configure(pady="0")
+    button_lastPage.configure(text='''<<''')
+    button_lastPage.configure(command=last_page)
 def configure_sl():
     frame_sl_main.place(relx=0.0, rely=0.083, relheight=0.833, relwidth=1.0)
     frame_sl_main.configure(relief='groove')
@@ -772,23 +747,30 @@ def configure_delEntry():
 # Lift screens
 #-------------------------------------
 def focus_inv():
+    global CURRENTSCREEN
     frame_invMain.lift()
     frame_inv_search.lift()
-    curScreen = 1
+    CURRENTSCREEN = 1
+    CURRENTPAGE = 0
+    button_lastPage.place_forget()
+    fill_inv()
 def focus_rec():
+    global CURRENTSCREEN
     frame_rec_menu.lift()
     frame_rec_main.lift()
-    curScreen = 2
+    CURRENTSCREEN = 2
 def focus_sl():
+    global CURRENTSCREEN
     frame_sl_main.lift()
-    curScreen = 3
+    CURRENTSCREEN = 3
 def return_curScreen():
+    global CURRENTSCREEN
     clear_pop()
-    if (curScreen == 1):
+    if (CURRENTSCREEN == 1):
         focus_inv()
-    elif (curScreen == 2):
+    elif (CURRENTSCREEN == 2):
         focus_rec()
-    elif (curScreen == 3):
+    elif (CURRENTSCREEN == 3):
         focus_sl()
 
 #------------------------------------
@@ -806,29 +788,63 @@ def clear_pop():
     label_expDel.configure(text = "")
     label_curNum.configure(text = "")
 def fill_inv():
-    # get current invenotyr
-    curRow=0
-    curCol=0
+    global STARTUP
+    global inv_widgets
+    global NUMPAGES
+    global CURRENTPAGE
+    # after the inital setup
+    print("STARTUP PAGE >> "+str(CURRENTPAGE))
+    if (STARTUP != 0):
+        clear_widgets(inv_widgets)
+    STARTUP = 1
+    # clear widgets
+    inv_widgets = []
+    # get current inventory
+    curInv = invfunc.get_inv(invdb)
+    # get starting point for pagenum
+    totalRow = len(curInv)-1
+    totalCol = len(curInv[0])-1
+    # Calculate the number of pages
+    NUMPAGES = math.ceil(totalRow/8)
+    #print("NUMPAGES >>"+str(NUMPAGES))
+    numEntries = 0
+    curRow = CURRENTPAGE*8
+    curCol = 0
     H = 30
     W = 125
-    X = 0.264 #inc by .065
-    Y = 0.156 #inc by 0.137
-
-
-    button_inv_nameAct = tk.Button(frame_invMain)
-    label_inv_quanData = tk.Label(frame_invMain)
-    label_inv_fgData = tk.Label(frame_invMain)
-    label_inv_endData = tk.Label(frame_invMain)
-    label_inv_exdData = tk.Label(frame_invMain)
-    label_inv_barcData = tk.Label(frame_invMain)
-    button_inv_nameAct.place(relx=0.127, rely=0.156, height=30, width=125)
-    label_inv_quanData.place(relx=0.264, rely=0.156, height=30, width=124)
-    label_inv_fgData.place(relx=0.4, rely=0.156, height=30, width=125)
-    label_inv_endData.place(relx=0.537, rely=0.156, height=30, width=125)
-    label_inv_exdData.place(relx=0.674, rely=0.156, height=30, width=125)
-    label_inv_barcData.place(relx=0.811, rely=0.156, height=30, width=125)
-
-
+    X = 0.264 #inc by 0.137
+    Y = 0.156 #inc by .065
+    #print("TOTAL ROWs >> "+str(totalRow))
+    for row in range(totalRow-1):
+        row += curRow
+        #print("ROW >> "+str(row))
+        if ((numEntries == MAXPERPAGE) or (row == totalRow+1)):
+            break;
+        current_row = curInv[curRow]
+        # Make Item button
+        button_inv_nameAct = tk.Button(frame_invMain)
+        button_inv_nameAct.place(relx=0.065, rely=Y, height=H, width=190)
+        button_inv_nameAct.configure(text=curInv[row][0])
+        invfunc.configure_nameButton(button_inv_nameAct)
+        inv_widgets.append(button_inv_nameAct)
+        # reset the x position
+        X = 0.264
+        for col in range (totalCol):
+            col+=1
+            invlabel = tk.Label(frame_invMain)
+            invlabel.place(relx=X, rely=Y, height=H, width=W)
+            invlabel.configure(text=curInv[row][col])
+            invfunc.configure_label(invlabel)
+            inv_widgets.append(invlabel)
+            # increment placement values
+            #curRow+=1
+            X+=0.137
+        # increment y position
+        Y+=0.1
+        numEntries+=1
+def clear_widgets(list_of_widgets):
+    for widget in list_of_widgets:
+        widget.destroy()
 #-------------------------------
 # Control Functions
 #-------------------------------
@@ -938,12 +954,35 @@ def delete_inv():
             return_curScreen()
     else:
         print("\nITEM NOT IN INVENTORY \n")
+def next_page():
+    global CURRENTPAGE
+    global NUMPAGES
+    print("CURRENT PAGE >> "+str(CURRENTPAGE))
+    print("NUM PAGES >> "+str(NUMPAGES))
+    if (CURRENTPAGE < NUMPAGES-1):
+        CURRENTPAGE+=1
+        fill_inv()
+        button_lastPage.place(relx=0.01, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE == NUMPAGES-1):
+        button_NextPage.place_forget()
+def last_page():
+    global CURRENTPAGE
+    global NUMPAGES
+
+    print("CURRENT PAGE >> "+str(CURRENTPAGE))
+    print("NUM PAGES >> "+str(NUMPAGES))
+    if (CURRENTPAGE > 0):
+        CURRENTPAGE-=1
+        fill_inv()
+        button_NextPage.place(relx=0.947, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE == 0):
+        button_lastPage.place_forget()
+
 
 
 #----------------------------------------
 # DRIVING CODE
 #----------------------------------------
-global val, w, root
 # make root
 root = tk.Tk()
 root.title("IOT Pantry System")
@@ -979,7 +1018,6 @@ label_entDate = tk.Label(frame_del)
 label_curNum = tk.Label(frame_del)
 label_userInst = tk.Label(frame_del)
 
-
 # Functional Components of the item entry popup
 entry_code = tk.Entry(frame_addEntry)
 Entry_prod_name = tk.Entry(frame_addEntry)
@@ -987,6 +1025,11 @@ Entry_foodGroup = tk.Entry(frame_addEntry)
 Entry_expd = tk.Entry(frame_addEntry)
 entry_numItems = tk.Entry(frame_addEntry)
 button_add = tk.Button(frame_addEntry)
+
+# Functional Components on the inventory screens
+button_NextPage= tk.Button(frame_invMain)
+button_lastPage = tk.Button(frame_invMain)
+
 
 # configure the separate screens
 configure_base()
@@ -998,10 +1041,6 @@ configure_inv()
 configure_delEntry()
 # pick start screen
 focus_inv()
-
-# Connect to databases
-invdb = sqlite3.connect('inventory.db')
-refdb = sqlite3.connect('ref.db')
 
 # Start GUI
 root.mainloop()

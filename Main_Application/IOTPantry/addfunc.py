@@ -32,7 +32,7 @@ def get_info(pull, table, field, code, db):
 def check_inv(table, code, db):
     c = db.cursor()
     command = 'SELECT EXISTS(SELECT * FROM '+table+' WHERE barcode_num="'+code+'");'
-    print(command)
+    
     c.execute(command)
     data = c.fetchall()
     return data

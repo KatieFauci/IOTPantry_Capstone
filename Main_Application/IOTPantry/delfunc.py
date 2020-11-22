@@ -1,3 +1,5 @@
+
+
 # decreases the count of an item
 def inc_count(db, code, incNum):
     # get current Quantity
