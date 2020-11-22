@@ -1,19 +1,15 @@
 from flask import Flask
 from flask import render_template
-from frlask_mysqld import MySQL
+import Main_Application.IOTPantry
+# import Main_Application --> Will be importing the main application file that will be going here
+# Main app needs to run in the background
+
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'Inventory_Database'
-
-mysql = MySQL(app)
-
 @app.route('/')
-def Home():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM food_type")
-    fetchdata = cur.fetchall()
-    cur.close()
-    return redner_template('home.html', data = fetchdata)
+def run_script():
+    file = open(r'/', 'r').read()
+    return exec(file)
+
+if __name__ == '__main__':
+    app.run(debug=True)
