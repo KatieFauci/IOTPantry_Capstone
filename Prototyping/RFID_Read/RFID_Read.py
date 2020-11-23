@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #IOT Smart Pantry Inventory System
 #Capstone 2 Fall 2020
 #Group: Katherine Fauci, Erik Rodriguez, Keshawn Smith
@@ -31,7 +31,7 @@ print ("Press Control-C to end scanning.")
 
 while continue_read:
     (status,TagType) = RFID_Reader.MFRC522_Request(RFID_Reader.PICC_REQIDL) #Scans for tags
-    
+
     if status == RFID_Reader.MI_OK: #Checks if tag is present
         print ("Tag detected")
 
@@ -41,4 +41,3 @@ while continue_read:
         print ("Card read RFID: %s,%s,%s,%s") % (uid[0], uid[1], uid[2], uid[3])
 
         RFID_Reader.MFRC522_SelectTag(uid) #Selects the tag that was scanned
-
