@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #IOT Smart Pantry Inventory System
 #Capstone 2 Fall 2020
 #Group: Katherine Fauci, Erik Rodriguez, Keshawn Smith
