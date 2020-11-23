@@ -191,19 +191,29 @@ class InventoryPage(FloatLayout):
         super().__init__(**kwargs)
         self.word_dict = {}
 
+        self.add_widget(Label())
+
+        self.add_widget(Label(text="Inventory",
+                              font_size='40sp',
+                              size_hint=(1, 2),
+                              pos_hint={'center_x': .5, 'center_y': .95},
+                              bold=True))
+
+        self.add_widget(Label())
+
         self.add_widget(Label(text="Product Name",
                               size_hint=(1, 2),
-                              pos_hint={'center_x': .25, 'center_y': .9},
+                              pos_hint={'center_x': .25, 'center_y': .85},
                               bold=True))
 
         self.add_widget(Label(text="Quantity",
                               size_hint=(.25, .46),
-                              pos_hint={'center_x': .55, 'center_y': .9},
+                              pos_hint={'center_x': .55, 'center_y': .85},
                               bold=True))
 
         self.add_widget(Label(text="Expiration",
                               size_hint=(.25, .46),
-                              pos_hint={'center_x': .75, 'center_y': .9},
+                              pos_hint={'center_x': .75, 'center_y': .85},
                               bold=True))
 
         invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
@@ -234,7 +244,8 @@ class InventoryPage(FloatLayout):
                               size_hint_x= None,
                               halign= 'left',
                               valign= 'middle',
-                              pos_hint={'center_x': .25}))
+                              pos_hint={'center_x': .25},
+                              padding_x=20))
 
         self.add_widget(Label(text=str(data2),
                               pos_hint={'center_x': .55}))
@@ -247,7 +258,9 @@ class InventoryPage(FloatLayout):
 
         self.Re_Button = Button(text="Return",
                                 size_hint=(.25, .26),
-                                pos_hint={'center_x': .5, 'center_y': .1})
+                                text_size=self.size,
+                                pos_hint={'center_x': .5, 'center_y': .1},
+                                padding_x=20)
         self.Re_Button.bind(on_press=self.ReturnBack)
         self.add_widget(Label())
         self.add_widget(self.Re_Button)
