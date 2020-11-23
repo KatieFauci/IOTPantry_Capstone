@@ -4,9 +4,9 @@ from datetime import date
 # Contains Functions for the main application to reference
 
 # Retrieves the next id to use for an entry
-def get_new_id(table, db):
+def get_new_id(table, db, id):
     c = db.cursor()
-    c.execute("SELECT MAX(item_id)+1 FROM "+table+";")
+    c.execute("SELECT MAX("+id+")+1 FROM "+table+";")
     data = c.fetchall()
     print("\n NEW ID >> "+str(data[0][0])+"\n")
     return data[0][0]
@@ -32,7 +32,7 @@ def get_info(pull, table, field, code, db):
 def check_inv(table, code, db):
     c = db.cursor()
     command = 'SELECT EXISTS(SELECT * FROM '+table+' WHERE barcode_num="'+code+'");'
-    
+
     c.execute(command)
     data = c.fetchall()
     return data

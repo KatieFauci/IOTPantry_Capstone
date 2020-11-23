@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import tkinter as tk
 import Tcl
@@ -7,25 +8,31 @@ import math
 import addfunc
 import delfunc
 import invfunc
+import slfunc
 
 
-# GLOBAL VARIABLES
+# GLOBAL Constants
 END = 50
+# Global Control VARIABLES
 CURRENTSCREEN = 1
-CURRENTPAGE = 0
-MAXPERPAGE = 8
-NUMPAGES = 0
-STARTUP = 0
 # Global inventory Variables
+NUMPAGES_INV = 0
+FIRSTLIST_INV = 0
+CURRENTPAGE_INV = 0
+MAXPERPAGE_INV = 8
 curInv = []
 inv_widgets = []
 # Global SL VARIABLES
+sl_widgets = []
+FIRSTLIST_SL = 0;
+CURRENTPAGE_SL = 0
+NUMPAGES_SL = 0
+MAXPERPAGE_SL = 10
 # Global recipie variables
 
 # Connect to databases
 invdb = sqlite3.connect('inventory.db')
 refdb = sqlite3.connect('ref.db')
-
 
 #------------------------------------
 # Screen Configuration Functions
@@ -130,7 +137,7 @@ def configure_base():
     button_out.configure(text='''Scan Out''')
     button_out.configure(command=focus_delEntry)
 
-    entry_addShopList.place(relx=0.039, rely=0.933, height=20, relwidth=0.248)
+    entry_addShopList.place(relx=0.04, rely=0.933, height=20, relwidth=0.19)
     entry_addShopList.configure(background="white")
     entry_addShopList.configure(disabledforeground="#a3a3a3")
     entry_addShopList.configure(font="TkFixedFont")
@@ -140,8 +147,21 @@ def configure_base():
     entry_addShopList.configure(insertbackground="black")
     entry_addShopList.configure(selectbackground="blue")
     entry_addShopList.configure(selectforeground="white")
+    entry_addShopList.configure(text="Item")
 
-    button_addShopList.place(relx=0.303, rely=0.933, height=24, width=200)
+    entry_notesShopList.place(relx=0.24, rely=0.933, height=20, relwidth=0.15)
+    entry_notesShopList.configure(background="white")
+    entry_notesShopList.configure(disabledforeground="#a3a3a3")
+    entry_notesShopList.configure(font="TkFixedFont")
+    entry_notesShopList.configure(foreground="#000000")
+    entry_notesShopList.configure(highlightbackground="#d9d9d9")
+    entry_notesShopList.configure(highlightcolor="black")
+    entry_notesShopList.configure(insertbackground="black")
+    entry_notesShopList.configure(selectbackground="blue")
+    entry_notesShopList.configure(selectforeground="white")
+    entry_notesShopList.configure(text="Notes")
+
+    button_addShopList.place(relx=0.4, rely=0.933, height=24, width=200)
     button_addShopList.configure(activebackground="#ececec")
     button_addShopList.configure(activeforeground="#000000")
     button_addShopList.configure(background="#d9d9d9")
@@ -151,6 +171,7 @@ def configure_base():
     button_addShopList.configure(highlightcolor="black")
     button_addShopList.configure(pady="0")
     button_addShopList.configure(text='''Add To Shopping List''')
+    button_addShopList.configure(command=add_sl)
 def configure_inv():
     label_inv_name = tk.Label(frame_invMain)
     label_inv_quan = tk.Label(frame_invMain)
@@ -356,7 +377,7 @@ def configure_inv():
     button_NextPage.configure(highlightcolor="black")
     button_NextPage.configure(pady="0")
     button_NextPage.configure(text='''>>''')
-    button_NextPage.configure(command=next_page)
+    button_NextPage.configure(command=next_page_inv)
 
     button_lastPage.place(relx=0.01, rely=0.889, height=40, width=45)
     button_lastPage.configure(activebackground="#ececec")
@@ -368,7 +389,7 @@ def configure_inv():
     button_lastPage.configure(highlightcolor="black")
     button_lastPage.configure(pady="0")
     button_lastPage.configure(text='''<<''')
-    button_lastPage.configure(command=last_page)
+    button_lastPage.configure(command=last_page_inv)
 def configure_sl():
     frame_sl_main.place(relx=0.0, rely=0.083, relheight=0.833, relwidth=1.0)
     frame_sl_main.configure(relief='groove')
@@ -378,8 +399,7 @@ def configure_sl():
     frame_sl_main.configure(highlightbackground="#d9d9d9")
     frame_sl_main.configure(highlightcolor="black")
 
-    button_sl_delete = tk.Button(frame_sl_main)
-    button_sl_delete.place(relx=0.059, rely=0.068, height=24, width=47)
+    button_sl_delete.place(relx=0.059, rely=0.04, height=34, width=127)
     button_sl_delete.configure(activebackground="#ececec")
     button_sl_delete.configure(activeforeground="#000000")
     button_sl_delete.configure(background="#af0101")
@@ -388,29 +408,37 @@ def configure_sl():
     button_sl_delete.configure(highlightbackground="#d9d9d9")
     button_sl_delete.configure(highlightcolor="black")
     button_sl_delete.configure(pady="0")
-    button_sl_delete.configure(text='''Delete''')
+    button_sl_delete.configure(text='''Clear List''')
+    button_sl_delete.configure(command=clear_sl)
 
-    label_sl_item = tk.Label(frame_sl_main)
-    label_sl_item.place(relx=0.117, rely=0.156, height=34, width=198)
-    label_sl_item.configure(activebackground="#f9f9f9")
-    label_sl_item.configure(activeforeground="black")
-    label_sl_item.configure(background="#d9d9d9")
-    label_sl_item.configure(disabledforeground="#a3a3a3")
-    label_sl_item.configure(foreground="#000000")
-    label_sl_item.configure(highlightbackground="#d9d9d9")
-    label_sl_item.configure(highlightcolor="black")
-    label_sl_item.configure(text='''X''')
 
-    Checkbutton2 = tk.Checkbutton(frame_sl_main)
-    Checkbutton2.place(relx=0.059, rely=0.156, relheight=0.056, relwidth=0.061)
-    Checkbutton2.configure(activebackground="#ececec")
-    Checkbutton2.configure(activeforeground="#000000")
-    Checkbutton2.configure(background="#585670")
-    Checkbutton2.configure(disabledforeground="#a3a3a3")
-    Checkbutton2.configure(foreground="#000000")
-    Checkbutton2.configure(highlightbackground="#d9d9d9")
-    Checkbutton2.configure(highlightcolor="black")
-    Checkbutton2.configure(justify='left')
+    button_NextPage_sl.place(relx=0.947, rely=0.889, height=40, width=45)
+    button_NextPage_sl.configure(activebackground="#ececec")
+    button_NextPage_sl.configure(activeforeground="#000000")
+    button_NextPage_sl.configure(background="#d9d9d9")
+    button_NextPage_sl.configure(disabledforeground="#a3a3a3")
+    button_NextPage_sl.configure(foreground="#000000")
+    button_NextPage_sl.configure(highlightbackground="#d9d9d9")
+    button_NextPage_sl.configure(highlightcolor="black")
+    button_NextPage_sl.configure(pady="0")
+    button_NextPage_sl.configure(text='''>>''')
+    button_NextPage_sl.configure(command=next_page_sl)
+
+    button_lastPage_sl.place(relx=0.01, rely=0.889, height=40, width=45)
+    button_lastPage_sl.configure(activebackground="#ececec")
+    button_lastPage_sl.configure(activeforeground="#000000")
+    button_lastPage_sl.configure(background="#d9d9d9")
+    button_lastPage_sl.configure(disabledforeground="#a3a3a3")
+    button_lastPage_sl.configure(foreground="#000000")
+    button_lastPage_sl.configure(highlightbackground="#d9d9d9")
+    button_lastPage_sl.configure(highlightcolor="black")
+    button_lastPage_sl.configure(pady="0")
+    button_lastPage_sl.configure(text='''<<''')
+    button_lastPage_sl.configure(command=last_page_sl)
+
+    entry_addShopList.insert(0, "Item")
+    entry_notesShopList.insert(0, "Notes")
+
 def configure_recipies():
     frame_rec_menu.place(relx=0.0, rely=0.083, relheight=0.083, relwidth=1.0)
     frame_rec_menu.configure(relief='groove')
@@ -748,12 +776,18 @@ def configure_delEntry():
 #-------------------------------------
 def focus_inv():
     global CURRENTSCREEN
+    global CURRENTPAGE_INV
     frame_invMain.lift()
     frame_inv_search.lift()
-    CURRENTSCREEN = 1
-    CURRENTPAGE = 0
-    button_lastPage.place_forget()
+    CURRENTSCREEN = 0
     fill_inv()
+    if (NUMPAGES_INV == 1):
+        button_NextPage.place_forget()
+        button_lastPage.place_forget()
+    else:
+        CURRENTPAGE_INV = 0
+        button_lastPage.place_forget()
+        button_NextPage.place(relx=0.947, rely=0.889, height=40, width=45)
 def focus_rec():
     global CURRENTSCREEN
     frame_rec_menu.lift()
@@ -763,6 +797,20 @@ def focus_sl():
     global CURRENTSCREEN
     frame_sl_main.lift()
     CURRENTSCREEN = 3
+    entry_addShopList.delete(0, END)
+    entry_notesShopList.delete(0, END)
+    entry_addShopList.insert(0, "Item")
+    entry_notesShopList.insert(0, "Notes")
+    update_sl()
+    if (NUMPAGES_SL == 1):
+        button_NextPage_sl.place_forget()
+        button_lastPage_sl.place_forget()
+    else:
+        CURRENTPAGE_INV = 0
+        button_lastPage_sl.place_forget()
+        button_NextPage_sl.place(relx=0.947, rely=0.889, height=40, width=45)
+
+    update_sl()
 def return_curScreen():
     global CURRENTSCREEN
     clear_pop()
@@ -787,66 +835,11 @@ def clear_pop():
     label_entDate.configure(text = "")
     label_expDel.configure(text = "")
     label_curNum.configure(text = "")
-def fill_inv():
-    global STARTUP
-    global inv_widgets
-    global NUMPAGES
-    global CURRENTPAGE
-    # after the inital setup
-    print("STARTUP PAGE >> "+str(CURRENTPAGE))
-    if (STARTUP != 0):
-        clear_widgets(inv_widgets)
-    STARTUP = 1
-    # clear widgets
-    inv_widgets = []
-    # get current inventory
-    curInv = invfunc.get_inv(invdb)
-    # get starting point for pagenum
-    totalRow = len(curInv)-1
-    totalCol = len(curInv[0])-1
-    # Calculate the number of pages
-    NUMPAGES = math.ceil(totalRow/8)
-    #print("NUMPAGES >>"+str(NUMPAGES))
-    numEntries = 0
-    curRow = CURRENTPAGE*8
-    curCol = 0
-    H = 30
-    W = 125
-    X = 0.264 #inc by 0.137
-    Y = 0.156 #inc by .065
-    #print("TOTAL ROWs >> "+str(totalRow))
-    for row in range(totalRow-1):
-        row += curRow
-        #print("ROW >> "+str(row))
-        if ((numEntries == MAXPERPAGE) or (row == totalRow+1)):
-            break;
-        current_row = curInv[curRow]
-        # Make Item button
-        button_inv_nameAct = tk.Button(frame_invMain)
-        button_inv_nameAct.place(relx=0.065, rely=Y, height=H, width=190)
-        button_inv_nameAct.configure(text=curInv[row][0])
-        invfunc.configure_nameButton(button_inv_nameAct)
-        inv_widgets.append(button_inv_nameAct)
-        # reset the x position
-        X = 0.264
-        for col in range (totalCol):
-            col+=1
-            invlabel = tk.Label(frame_invMain)
-            invlabel.place(relx=X, rely=Y, height=H, width=W)
-            invlabel.configure(text=curInv[row][col])
-            invfunc.configure_label(invlabel)
-            inv_widgets.append(invlabel)
-            # increment placement values
-            #curRow+=1
-            X+=0.137
-        # increment y position
-        Y+=0.1
-        numEntries+=1
 def clear_widgets(list_of_widgets):
     for widget in list_of_widgets:
         widget.destroy()
 #-------------------------------
-# Control Functions
+# Inventory Control Functions
 #-------------------------------
 def focus_barEntry():
     return_curScreen()
@@ -912,7 +905,7 @@ def add_inv():
     if(data[0][0] == 0): # Add as a new item
         print("\nITEM NOT IN INVENTORY\n")
         # get new id
-        newID = addfunc.get_new_id("items",invdb)
+        newID = addfunc.get_new_id("items",invdb,"item_id")
         print("Next ID >>> " + str(newID))
         # get food_group # ID
         fgID = addfunc.get_fg_id(Entry_foodGroup.get(),invdb)
@@ -954,31 +947,190 @@ def delete_inv():
             return_curScreen()
     else:
         print("\nITEM NOT IN INVENTORY \n")
-def next_page():
-    global CURRENTPAGE
-    global NUMPAGES
-    print("CURRENT PAGE >> "+str(CURRENTPAGE))
-    print("NUM PAGES >> "+str(NUMPAGES))
-    if (CURRENTPAGE < NUMPAGES-1):
-        CURRENTPAGE+=1
+def next_page_inv():
+    global CURRENTPAGE_INV
+    global NUMPAGES_INV
+    print("CURRENT PAGE >> "+str(CURRENTPAGE_INV))
+    print("NUM PAGES >> "+str(NUMPAGES_INV))
+    if (CURRENTPAGE_INV < NUMPAGES_INV-1):
+        CURRENTPAGE_INV+=1
         fill_inv()
         button_lastPage.place(relx=0.01, rely=0.889, height=40, width=45)
-    if (CURRENTPAGE == NUMPAGES-1):
+    if (CURRENTPAGE_INV == NUMPAGES_INV-1):
         button_NextPage.place_forget()
-def last_page():
-    global CURRENTPAGE
-    global NUMPAGES
+def last_page_inv():
+    global CURRENTPAGE_INV
+    global NUMPAGES_INV
 
-    print("CURRENT PAGE >> "+str(CURRENTPAGE))
-    print("NUM PAGES >> "+str(NUMPAGES))
-    if (CURRENTPAGE > 0):
-        CURRENTPAGE-=1
+    print("CURRENT PAGE >> "+str(CURRENTPAGE_INV))
+    print("NUM PAGES >> "+str(NUMPAGES_INV))
+    if (CURRENTPAGE_INV > 0):
+        CURRENTPAGE_INV-=1
         fill_inv()
         button_NextPage.place(relx=0.947, rely=0.889, height=40, width=45)
-    if (CURRENTPAGE == 0):
+    if (CURRENTPAGE_INV == 0):
         button_lastPage.place_forget()
-
-
+def fill_inv():
+    global FIRSTLIST_INV
+    global inv_widgets
+    global NUMPAGES_INV
+    global CURRENTPAGE_INV
+    global FIRSTLIST_INV
+    global MAXPERPAGE_INV
+    # after the inital setup
+    #print("FIRSTLIST_INV PAGE >> "+str(CURRENTPAGE_INV))
+    if (FIRSTLIST_INV != 0):
+        clear_widgets(inv_widgets)
+    FIRSTLIST_INV = 1
+    # clear widgets
+    inv_widgets = []
+    # get current inventory
+    curInv = invfunc.get_inv(invdb)
+    # get starting point for pagenum
+    totalRow = len(curInv)-1
+    totalCol = len(curInv[0])-1
+    # Calculate the number of pages
+    NUMPAGES_INV = math.ceil(totalRow/MAXPERPAGE_INV)
+    #print("NUMPAGES_INV >>"+str(NUMPAGES_INV))
+    numEntries = 0
+    curRow = CURRENTPAGE_INV*MAXPERPAGE_INV
+    curCol = 0
+    H = 30
+    W = 125
+    X = 0.264 #inc by 0.137
+    Y = 0.156 #inc by .065
+    #print("TOTAL ROWs >> "+str(totalRow))
+    for row in range(totalRow-1):
+        row += curRow
+        #print("ROW >> "+str(row))
+        if ((numEntries == MAXPERPAGE_INV) or (row == totalRow+1)):
+            break;
+        #current_row = curInv[curRow]
+        # Make Item button
+        button_inv_nameAct = tk.Button(frame_invMain)
+        button_inv_nameAct.place(relx=0.065, rely=Y, height=H, width=190)
+        button_inv_nameAct.configure(text=curInv[row][0])
+        invfunc.configure_nameButton(button_inv_nameAct)
+        inv_widgets.append(button_inv_nameAct)
+        # reset the x position
+        X = 0.264
+        for col in range (totalCol):
+            col+=1
+            invlabel = tk.Label(frame_invMain)
+            invlabel.place(relx=X, rely=Y, height=H, width=W)
+            invlabel.configure(text=curInv[row][col])
+            invfunc.configure_label(invlabel)
+            inv_widgets.append(invlabel)
+            # increment the x position
+            X+=0.137
+        # increment y position
+        Y+=0.1
+        numEntries+=1
+#----------------------------------------
+# Shopping List Control Functions
+#----------------------------------------
+def update_sl():
+    global MAXPERPAGE_SL
+    global sl_widgets
+    global FIRSTLIST_SL
+    global CURRENTPAGE_SL
+    global NUMPAGES_SL
+    print("CURRENT PAGE >> "+str(CURRENTPAGE_SL))
+    print("FIRSTLIST_INV PAGE >> "+str(CURRENTPAGE_SL))
+    if (FIRSTLIST_SL != 0):
+        clear_widgets(inv_widgets)
+    FIRSTLIST_SL = 1
+    print("MAX PER PAGE >> " + str(MAXPERPAGE_SL))
+    # pull info from he database
+    sl = slfunc.get_sl_data(invdb)
+    #print(sl)
+    # get total number of entries
+    totalRow = len(sl)
+    print("LENGTH OF SL >> "+str(totalRow))
+    numEntries = 0
+    curRow = CURRENTPAGE_SL*MAXPERPAGE_SL
+    # Calculate the number of pages
+    NUMPAGES_SL = math.ceil(totalRow/MAXPERPAGE_SL)
+    print("NUMBER OF PAGES >> "+str(NUMPAGES_SL))
+    Y = 0.156
+    yinc = .08
+    sl_widgets = []
+    # print labels
+    print("TOTAL ROW >> "+str(totalRow))
+    for row in range(totalRow):
+        row += curRow
+        #print("ROW >> "+str(row))
+        print("SL ROW >> "+str(row))
+        if ((numEntries == MAXPERPAGE_SL) or (row == totalRow+1)):
+            break;
+        #current_row = curInv[curRow]
+        # make Checkbox
+        checkbox_sl = tk.Checkbutton(frame_sl_main)
+        checkbox_sl.place(relx=0.059, rely=Y, relheight=0.056, relwidth=0.061)
+        slfunc.configure_slCheckbox(checkbox_sl)
+        inv_widgets.append(checkbox_sl)
+        # Make Item button
+        button_slEntry = tk.Button(frame_sl_main)
+        button_slEntry.place(relx=0.1, rely=Y, height=34, width=250)
+        button_slEntry.configure(text=sl[row][0])
+        slfunc.configure_slEntry(button_slEntry)
+        inv_widgets.append(button_slEntry)
+        # make notes label
+        label_slNotes = tk.Label(frame_sl_main)
+        label_slNotes.place(relx=0.35, rely=Y, height=34, width=400)
+        label_slNotes.configure(text=sl[row][1])
+        slfunc.configure_slEntry(label_slNotes)
+        inv_widgets.append(label_slNotes)
+        # Count entry
+        numEntries+=1
+        Y+=yinc
+def add_sl():
+    #get textbox input
+    entry = entry_addShopList.get()
+    note = entry_notesShopList.get()
+    #if the entry is not empty
+    if ((entry != "") and (entry != "Item")):
+        # Get a new ID
+        newID = addfunc.get_new_id("shopping_list", invdb, "list_id")
+        if (note == "Notes"):
+            note = ""
+        # add the text to the shopping list
+        slfunc.add_sl_db(invdb, entry, newID, note)
+    # clear textbox
+    entry_addShopList.delete(0, END)
+    entry_notesShopList.delete(0, END)
+    entry_addShopList.insert(0, "Item")
+    entry_notesShopList.insert(0, "Notes")
+    # update the shopping list
+    update_sl()
+def next_page_sl():
+    global CURRENTPAGE_SL
+    global NUMPAGES_SL
+    print("CURRENT PAGE >> "+str(CURRENTPAGE_SL))
+    print("NUM PAGES >> "+str(NUMPAGES_SL))
+    if (CURRENTPAGE_SL < NUMPAGES_SL-1):
+        CURRENTPAGE_SL+=1
+        button_lastPage_sl.place(relx=0.01, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE_SL == NUMPAGES_SL-1):
+        button_NextPage_sl.place_forget()
+    update_sl()
+def last_page_sl():
+    global CURRENTPAGE_SL
+    global NUMPAGES_SL
+    print("CURRENT PAGE >> "+str(CURRENTPAGE_SL))
+    print("NUM PAGES >> "+str(NUMPAGES_SL))
+    if (CURRENTPAGE_SL > 0):
+        CURRENTPAGE_SL-=1
+        button_NextPage_sl.place(relx=0.947, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE_SL == 0):
+        button_lastPage_sl.place_forget()
+    update_sl()
+def clear_sl():
+    command = "DELETE FROM shopping_list"
+    c = invdb.cursor()
+    c.execute(command)
+    invdb.commit()
+    update_sl()
 
 #----------------------------------------
 # DRIVING CODE
@@ -1006,6 +1158,7 @@ entry_barcode = tk.Entry(canvas_base)
 button_in = tk.Button(canvas_base)
 button_out = tk.Button(canvas_base)
 entry_addShopList = tk.Entry(canvas_base)
+entry_notesShopList = tk.Entry(canvas_base)
 button_addShopList = tk.Button(canvas_base)
 
 # functional components of delete entry Delete popup
@@ -1029,6 +1182,11 @@ button_add = tk.Button(frame_addEntry)
 # Functional Components on the inventory screens
 button_NextPage= tk.Button(frame_invMain)
 button_lastPage = tk.Button(frame_invMain)
+
+# Functional Components on the Shopping List
+button_NextPage_sl= tk.Button(frame_sl_main)
+button_lastPage_sl = tk.Button(frame_sl_main)
+button_sl_delete = tk.Button(frame_sl_main)
 
 
 # configure the separate screens
