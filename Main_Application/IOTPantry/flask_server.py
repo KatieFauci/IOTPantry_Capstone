@@ -2,6 +2,7 @@ import sqlite3
 from flask import g
 
 DATABASE = 'inventory.db'
+app = Flask(__name__)
 
 def get_db():
     db = getattr(g, '_database', None)
