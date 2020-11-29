@@ -20,3 +20,4 @@ def close_connection(exception):
 def init_db():
     with app.app_context():
         db = get_db()
+    return db
