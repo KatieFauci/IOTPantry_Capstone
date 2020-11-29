@@ -1,5 +1,5 @@
 import sqlite3
-from flask import g
+from flask import Flask
 
 DATABASE = 'inventory.db'
 app = Flask(__name__)
