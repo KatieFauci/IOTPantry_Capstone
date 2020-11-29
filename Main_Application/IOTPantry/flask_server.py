@@ -1,8 +1,8 @@
 import sqlite3
 from flask import Flask
 
-DATABASE = 'inventory.db'
 app = Flask(__name__)
+DATABASE = 'inventory.db'
 
 @app.route('/')
 def get_db():
@@ -16,3 +16,7 @@ def close_connection(exception):
     db = getattr(Flask, '_database', None)
     if db is not None:
         db.close()
+
+def init_db():
+    with app.app_context():
+        db = get_db()
