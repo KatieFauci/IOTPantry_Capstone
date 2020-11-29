@@ -1,9 +1,10 @@
 import sqlite3
 from flask import Flask
 
-app = Flask(__name__)
 DATABASE = 'inventory.db'
+app = Flask(__name__)
 
+@app.route('/')
 def get_db():
     db = getattr(Flask, '_database', None)
     if db is None:
