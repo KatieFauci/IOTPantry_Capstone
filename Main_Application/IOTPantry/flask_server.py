@@ -1,8 +1,8 @@
 import sqlite3
 from flask import Flask
 
-DATABASE = 'inventory.db'
 app = Flask(__name__)
+DATABASE = 'inventory.db'
 
 def get_db():
     db = getattr(Flask, '_database', None)
