@@ -1,23 +1,25 @@
 import sqlite3
-from flask import Flask
+import click
+from flask import current_app, g
+from flask.cli import with_appcontext
 
-app = Flask(__name__)
 DATABASE = 'inventory.db'
 
-@app.route('/')
 def get_db():
-    db = getattr(Flask, '_database', None)
-    if db is None:
-        db = Flask._database = sqlite3.connect(DATABASE)
-    return db
+    if 'db' not in g:
+        g.db = sqlite3.connect(
+            current_app.config['DATABASE'],
+            detect_types=sqlite3.PARSE_DECLTYPES
+        )
+        g.db.row_factory = sqlite3.Row
 
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(Flask, '_database', None)
+    return g.db
+
+def init_app(app):
+    app.teardown_appcontext(close_db)
+
+def close_db(e=None):
+    db = g.pop('db', None)
+
     if db is not None:
         db.close()
-
-def init_db():
-    with app.app_context():
-        db = get_db()
-    return db
