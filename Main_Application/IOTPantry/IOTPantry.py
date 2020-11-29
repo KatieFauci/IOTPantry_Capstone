@@ -284,75 +284,6 @@ def configure_inv():
     label_inv_bar.configure(highlightcolor="black")
     label_inv_bar.configure(text='''Barcode''')
 
-    button_inv_nameAct = tk.Button(frame_invMain)
-    button_inv_nameAct.place(relx=0.127, rely=0.156, height=30, width=125)
-    button_inv_nameAct.configure(activebackground="#ececec")
-    button_inv_nameAct.configure(activeforeground="#000000")
-    button_inv_nameAct.configure(background="#d3d3d3")
-    button_inv_nameAct.configure(disabledforeground="#a3a3a3")
-    button_inv_nameAct.configure(foreground="#000000")
-    button_inv_nameAct.configure(highlightbackground="#d9d9d9")
-    button_inv_nameAct.configure(highlightcolor="black")
-    button_inv_nameAct.configure(pady="0")
-    button_inv_nameAct.configure(relief="flat")
-    button_inv_nameAct.configure(text='''NAME BUTTON''')
-
-    label_inv_quanData = tk.Label(frame_invMain)
-    label_inv_quanData.place(relx=0.264, rely=0.156, height=30, width=124)
-    label_inv_quanData.configure(activebackground="#f9f9f9")
-    label_inv_quanData.configure(activeforeground="black")
-    label_inv_quanData.configure(background="#d9d9d9")
-    label_inv_quanData.configure(disabledforeground="#a3a3a3")
-    label_inv_quanData.configure(foreground="#000000")
-    label_inv_quanData.configure(highlightbackground="#d9d9d9")
-    label_inv_quanData.configure(highlightcolor="black")
-    label_inv_quanData.configure(text='''X''')
-
-    label_inv_fgData = tk.Label(frame_invMain)
-    label_inv_fgData.place(relx=0.4, rely=0.156, height=30, width=125)
-    label_inv_fgData.configure(activebackground="#f9f9f9")
-    label_inv_fgData.configure(activeforeground="black")
-    label_inv_fgData.configure(background="#d9d9d9")
-    label_inv_fgData.configure(disabledforeground="#a3a3a3")
-    label_inv_fgData.configure(foreground="#000000")
-    label_inv_fgData.configure(highlightbackground="#d9d9d9")
-    label_inv_fgData.configure(highlightcolor="black")
-    label_inv_fgData.configure(text='''X''')
-
-    label_inv_endData = tk.Label(frame_invMain)
-    label_inv_endData.place(relx=0.537, rely=0.156, height=30, width=125)
-    label_inv_endData.configure(activebackground="#f9f9f9")
-    label_inv_endData.configure(activeforeground="black")
-    label_inv_endData.configure(background="#d9d9d9")
-    label_inv_endData.configure(disabledforeground="#a3a3a3")
-    label_inv_endData.configure(foreground="#000000")
-    label_inv_endData.configure(highlightbackground="#d9d9d9")
-    label_inv_endData.configure(highlightcolor="black")
-    label_inv_endData.configure(text='''X''')
-
-    label_inv_exdData = tk.Label(frame_invMain)
-    label_inv_exdData.place(relx=0.674, rely=0.156, height=30, width=125)
-    label_inv_exdData.configure(activebackground="#f9f9f9")
-    label_inv_exdData.configure(activeforeground="black")
-    label_inv_exdData.configure(background="#d9d9d9")
-    label_inv_exdData.configure(disabledforeground="#a3a3a3")
-    label_inv_exdData.configure(foreground="#000000")
-    label_inv_exdData.configure(highlightbackground="#d9d9d9")
-    label_inv_exdData.configure(highlightcolor="black")
-    label_inv_exdData.configure(text='''X''')
-
-    label_inv_barcData = tk.Label(frame_invMain)
-    label_inv_barcData.place(relx=0.811, rely=0.156, height=30, width=125)
-    label_inv_barcData.configure(activebackground="#f9f9f9")
-    label_inv_barcData.configure(activeforeground="black")
-    label_inv_barcData.configure(background="#d9d9d9")
-    label_inv_barcData.configure(disabledforeground="#a3a3a3")
-    label_inv_barcData.configure(foreground="#000000")
-    label_inv_barcData.configure(highlightbackground="#d9d9d9")
-    label_inv_barcData.configure(highlightcolor="black")
-    label_inv_barcData.configure(text='''X''')
-
-    entry_inv_search = tk.Entry(frame_inv_search)
     entry_inv_search.place(relx=0.02, rely=0.3, height=20, relwidth=0.17)
     entry_inv_search.configure(background="white")
     entry_inv_search.configure(disabledforeground="#a3a3a3")
@@ -400,6 +331,20 @@ def configure_inv():
     button_lastPage.configure(pady="0")
     button_lastPage.configure(text='''<<''')
     button_lastPage.configure(command=last_page_inv)
+
+    button_clear_search = tk.Button(frame_inv_search)
+    button_clear_search.place(relx=0.264, rely=0.3, height=24, width=76)
+    button_clear_search.configure(activebackground="#ececec")
+    button_clear_search.configure(activeforeground="#000000")
+    button_clear_search.configure(background="#d9d9d9")
+    button_clear_search.configure(disabledforeground="#a3a3a3")
+    button_clear_search.configure(foreground="#000000")
+    button_clear_search.configure(highlightbackground="#d9d9d9")
+    button_clear_search.configure(highlightcolor="black")
+    button_clear_search.configure(pady="0")
+    button_clear_search.configure(text='''Clear Search''')
+    button_clear_search.configure(command = fill_inv)
+
 def configure_sl():
     frame_sl_main.place(relx=0.0, rely=0.083, relheight=0.833, relwidth=1.0)
     frame_sl_main.configure(relief='groove')
@@ -1039,8 +984,8 @@ def fill_inv():
     # get current inventory
     curInv = invfunc.get_inv(invdb)
     # get starting point for pagenum
-    totalRow = len(curInv)-1
-    totalCol = len(curInv[0])-1
+    totalRow = len(curInv)
+    totalCol = len(curInv[0])
     # Calculate the number of pages
     NUMPAGES_INV = math.ceil(totalRow/MAXPERPAGE_INV)
     #print("NUMPAGES_INV >>"+str(NUMPAGES_INV))
@@ -1052,7 +997,7 @@ def fill_inv():
     X = 0.264 #inc by 0.137
     Y = 0.156 #inc by .065
     #print("TOTAL ROWs >> "+str(totalRow))
-    for row in range(totalRow-1):
+    for row in range(totalRow):
         row += curRow
         #print("ROW >> "+str(row))
         if ((numEntries == MAXPERPAGE_INV) or (row == totalRow+1)):
@@ -1067,7 +1012,7 @@ def fill_inv():
         inv_widgets.append(button_inv_nameAct)
         # reset the x position
         X = 0.264
-        for col in range (totalCol):
+        for col in range (totalCol-1):
             col+=1
             invlabel = tk.Label(frame_invMain)
             invlabel.place(relx=X, rely=Y, height=H, width=W)
@@ -1119,8 +1064,9 @@ def search_inv():
     global FIRSTLIST_INV
     global MAXPERPAGE_INV
     key = entry_inv_search.get()
+    entry = entry_addShopList.get()
+    print(entry)
     print("KEY 1 >> "+ entry_inv_search.get())
-    key = "oats"
     # get entries related to key
     result = invfunc.get_inv_search(invdb, key)
     # display results-----
@@ -1129,21 +1075,22 @@ def search_inv():
     inv_widgets = []
     # get starting point for pagenum
     totalRow = len(result)
+    print("TOTAL ROW >> "+ str(totalRow))
     totalCol = len(result[0])
     # Calculate the number of pages
     NUMPAGES_INV = math.ceil(totalRow/MAXPERPAGE_INV)
     #print("NUMPAGES_INV >>"+str(NUMPAGES_INV))
     numEntries = 0
-    result = CURRENTPAGE_INV*MAXPERPAGE_INV
+    curRow = CURRENTPAGE_INV*MAXPERPAGE_INV
     curCol = 0
     H = 30
     W = 125
     X = 0.264 #inc by 0.137
     Y = 0.156 #inc by .065
     #print("TOTAL ROWs >> "+str(totalRow))
-    for row in range(totalRow-1):
+    for row in range(totalRow):
         row += curRow
-        #print("ROW >> "+str(row))
+        print("ROW >> "+str(row))
         if ((numEntries == MAXPERPAGE_INV) or (row == totalRow+1)):
             break;
         #current_row = curInv[curRow]
@@ -1152,11 +1099,11 @@ def search_inv():
         button_inv_nameAct.place(relx=0.065, rely=Y, height=H, width=190)
         button_inv_nameAct.configure(text=result[row][0])
         invfunc.configure_nameButton(button_inv_nameAct)
-        button_inv_nameAct.configure(command = lambda name=curInv[row][0]: remove_manual(name))
+        button_inv_nameAct.configure(command = lambda name=result[row][0]: remove_manual(name))
         inv_widgets.append(button_inv_nameAct)
         # reset the x position
         X = 0.264
-        for col in range (totalCol):
+        for col in range (totalCol-1):
             col+=1
             invlabel = tk.Label(frame_invMain)
             invlabel.place(relx=X, rely=Y, height=H, width=W)
