@@ -9,12 +9,14 @@ import addfunc
 import delfunc
 import invfunc
 import slfunc
-
+import rfunc
 
 # GLOBAL Constants
 END = 50
+
 # Global Control VARIABLES
 CURRENTSCREEN = 1
+
 # Global inventory Variables
 NUMPAGES_INV = 0
 FIRSTLIST_INV = 0
@@ -22,13 +24,20 @@ CURRENTPAGE_INV = 0
 MAXPERPAGE_INV = 8
 curInv = []
 inv_widgets = []
+
 # Global SL VARIABLES
 sl_widgets = []
 FIRSTLIST_SL = 0;
 CURRENTPAGE_SL = 0
 NUMPAGES_SL = 0
 MAXPERPAGE_SL = 10
+
 # Global recipie variables
+MAXPERPAGE_R = 5
+r_widgets = []
+FIRSTLIST_R = 0
+CURRENTPAGE_R = 0
+NUMPAGES_R = 0
 
 # Connect to databases
 invdb = sqlite3.connect('inventory.db')
@@ -446,18 +455,6 @@ def configure_recipies():
     frame_rec_menu.configure(relief="groove")
     frame_rec_menu.configure(background="#737373")
 
-    #TCombobox1 = ttk.Combobox(frame_rec_menu)
-    #TCombobox1.place(relx=0.596, rely=0.3, relheight=0.42
-    #        , relwidth=0.146)
-    #TCombobox1.configure(textvariable=Recipies_support.combobox)
-    #TCombobox1.configure(takefocus="")
-
-    #TCombobox2 = ttk.Combobox(frame_rec_menu)
-    #TCombobox2.place(relx=0.752, rely=0.3, relheight=0.42
-    #        , relwidth=0.142)
-    #TCombobox2.configure(textvariable=Recipies_support.combobox)
-    #TCombobox2.configure(takefocus="")
-
     Button1 = tk.Button(frame_rec_menu)
     Button1.place(relx=0.908, rely=0.3, height=24, width=75)
     Button1.configure(activebackground="#ececec")
@@ -470,8 +467,7 @@ def configure_recipies():
     Button1.configure(pady="0")
     Button1.configure(text='''Filter''')
 
-    frame_rec_main.place(relx=0.0, rely=0.167, relheight=0.75
-            , relwidth=1.0)
+    frame_rec_main.place(relx=0.0, rely=0.167, relheight=0.75, relwidth=1.0)
     frame_rec_main.configure(relief='groove')
     frame_rec_main.configure(borderwidth="2")
     frame_rec_main.configure(relief="groove")
@@ -492,16 +488,14 @@ def configure_recipies():
     label_rec_time.configure(text='''Time''')
 
     label_rec_timeDate = tk.Label(frame_rec_main)
-    label_rec_timeDate.place(relx=0.586, rely=0.222, height=30
-            , width=150)
+    label_rec_timeDate.place(relx=0.586, rely=0.222, height=30, width=150)
     label_rec_timeDate.configure(background="#d9d9d9")
     label_rec_timeDate.configure(disabledforeground="#a3a3a3")
     label_rec_timeDate.configure(foreground="#000000")
     label_rec_timeDate.configure(text='''X''')
 
     button_rec_nameData = tk.Button(frame_rec_main)
-    button_rec_nameData.place(relx=0.186, rely=0.222, height=30
-            , width=350)
+    button_rec_nameData.place(relx=0.186, rely=0.222, height=30, width=350)
     button_rec_nameData.configure(activebackground="#ececec")
     button_rec_nameData.configure(activeforeground="#000000")
     button_rec_nameData.configure(background="#d9d9d9")
@@ -514,22 +508,19 @@ def configure_recipies():
     button_rec_nameData.configure(relief="flat")
     button_rec_nameData.configure(text='''X''')
 def configure_recEntry():
-    frame_addrec = tk.Frame(canvas_base)
     frame_addrec.place(relx=0.0, rely=0.083, relheight=0.833, relwidth=1.0)
     frame_addrec.configure(relief='groove')
     frame_addrec.configure(borderwidth="2")
     frame_addrec.configure(relief="groove")
     frame_addrec.configure(background="#585670")
 
-    label_recEnt_title = tk.Label(frame_addrec)
     label_recEnt_title.place(relx=0.078, rely=0.08, height=30, width=350)
     label_recEnt_title.configure(background="#939393")
     label_recEnt_title.configure(disabledforeground="#a3a3a3")
     label_recEnt_title.configure(foreground="#000000")
     label_recEnt_title.configure(text='''Title''')
 
-    label_recEnt_time = tk.Label(frame_addrec)
-    label_recEnt_time.place(relx=0.078, rely=0.16, height=30, width=50)
+    label_recEnt_time.place(relx=0.078, rely=0.16, height=30, width=100)
     label_recEnt_time.configure(background="#939393")
     label_recEnt_time.configure(disabledforeground="#a3a3a3")
     label_recEnt_time.configure(foreground="#000000")
@@ -550,7 +541,6 @@ def configure_recEntry():
     label_rec_ing.configure(foreground="#000000")
     label_rec_ing.configure(text='''Ingredients''')
 
-    button_rec_addin = tk.Button(frame_addrec)
     button_rec_addin.place(relx=0.146, rely=0.9, height=30, width=175)
     button_rec_addin.configure(activebackground="#ececec")
     button_rec_addin.configure(activeforeground="#000000")
@@ -562,7 +552,6 @@ def configure_recEntry():
     button_rec_addin.configure(pady="0")
     button_rec_addin.configure(text='''Add Ingredients To List''')
 
-    listbox_rec_ing = tk.Listbox(frame_addrec)
     listbox_rec_ing.place(relx=0.088, rely=0.34, relheight=0.544, relwidth=0.316)
     listbox_rec_ing.configure(background="white")
     listbox_rec_ing.configure(cursor="fleur")
@@ -570,12 +559,14 @@ def configure_recEntry():
     listbox_rec_ing.configure(font="TkFixedFont")
     listbox_rec_ing.configure(foreground="#000000")
 
-    Llistbox_rec_ins = tk.Listbox(frame_addrec)
-    Llistbox_rec_ins.place(relx=0.449, rely=0.34, relheight=0.544, relwidth=0.512)
-    Llistbox_rec_ins.configure(background="white")
-    Llistbox_rec_ins.configure(disabledforeground="#a3a3a3")
-    Llistbox_rec_ins.configure(font="TkFixedFont")
-    Llistbox_rec_ins.configure(foreground="#000000")
+    label_steps.place(relx=0.449, rely=0.34, height=271, width=533)
+    label_steps.configure(background="#ffffff")
+    label_steps.configure(disabledforeground="#a3a3a3")
+    label_steps.configure(foreground="#000000")
+    label_steps.configure(justify="left")
+    label_steps.configure(text='''Steps''')
+    label_steps.configure(wraplength="500")
+    label_steps.configure(pady = 0)
 def configure_addEntry():
     frame_addEntry.place(relx=0.381, rely=0.15, relheight=0.658, relwidth=0.243)
     frame_addEntry.configure(relief='groove')
@@ -779,7 +770,7 @@ def focus_inv():
     global CURRENTPAGE_INV
     frame_invMain.lift()
     frame_inv_search.lift()
-    CURRENTSCREEN = 0
+    CURRENTSCREEN = 1
     fill_inv()
     if (NUMPAGES_INV == 1):
         button_NextPage.place_forget()
@@ -793,6 +784,7 @@ def focus_rec():
     frame_rec_menu.lift()
     frame_rec_main.lift()
     CURRENTSCREEN = 2
+    update_r()
 def focus_sl():
     global CURRENTSCREEN
     frame_sl_main.lift()
@@ -813,6 +805,7 @@ def focus_sl():
     update_sl()
 def return_curScreen():
     global CURRENTSCREEN
+    print("RETURN TO >> "+str(CURRENTSCREEN))
     clear_pop()
     if (CURRENTSCREEN == 1):
         focus_inv()
@@ -1011,6 +1004,7 @@ def fill_inv():
         button_inv_nameAct.place(relx=0.065, rely=Y, height=H, width=190)
         button_inv_nameAct.configure(text=curInv[row][0])
         invfunc.configure_nameButton(button_inv_nameAct)
+        button_inv_nameAct.configure(command = lambda name=curInv[row][0]: show_item(name))
         inv_widgets.append(button_inv_nameAct)
         # reset the x position
         X = 0.264
@@ -1026,6 +1020,8 @@ def fill_inv():
         # increment y position
         Y+=0.1
         numEntries+=1
+def show_item(name):
+    print("SHOW ITEM >> "+name)
 #----------------------------------------
 # Shopping List Control Functions
 #----------------------------------------
@@ -1038,7 +1034,7 @@ def update_sl():
     print("CURRENT PAGE >> "+str(CURRENTPAGE_SL))
     print("FIRSTLIST_INV PAGE >> "+str(CURRENTPAGE_SL))
     if (FIRSTLIST_SL != 0):
-        clear_widgets(inv_widgets)
+        clear_widgets(sl_widgets)
     FIRSTLIST_SL = 1
     print("MAX PER PAGE >> " + str(MAXPERPAGE_SL))
     # pull info from he database
@@ -1068,19 +1064,19 @@ def update_sl():
         checkbox_sl = tk.Checkbutton(frame_sl_main)
         checkbox_sl.place(relx=0.059, rely=Y, relheight=0.056, relwidth=0.061)
         slfunc.configure_slCheckbox(checkbox_sl)
-        inv_widgets.append(checkbox_sl)
+        sl_widgets.append(checkbox_sl)
         # Make Item button
         button_slEntry = tk.Button(frame_sl_main)
         button_slEntry.place(relx=0.1, rely=Y, height=34, width=250)
         button_slEntry.configure(text=sl[row][0])
         slfunc.configure_slEntry(button_slEntry)
-        inv_widgets.append(button_slEntry)
+        sl_widgets.append(button_slEntry)
         # make notes label
         label_slNotes = tk.Label(frame_sl_main)
         label_slNotes.place(relx=0.35, rely=Y, height=34, width=400)
         label_slNotes.configure(text=sl[row][1])
         slfunc.configure_slEntry(label_slNotes)
-        inv_widgets.append(label_slNotes)
+        sl_widgets.append(label_slNotes)
         # Count entry
         numEntries+=1
         Y+=yinc
@@ -1131,6 +1127,94 @@ def clear_sl():
     c.execute(command)
     invdb.commit()
     update_sl()
+
+#----------------------------------------
+# Recipies Control Functions
+#----------------------------------------
+def update_r():
+    global MAXPERPAGE_R
+    global r_widgets
+    global FIRSTLIST_R
+    global CURRENTPAGE_R
+    global NUMPAGES_R
+    print("CURRENT PAGE >> "+str(CURRENTPAGE_R))
+    print("FIRSTLIST_INV PAGE >> "+str(CURRENTPAGE_R))
+    if (FIRSTLIST_R != 0):
+        clear_widgets(r_widgets)
+    FIRSTLIST_R = 1
+    print("MAX PER PAGE >> " + str(MAXPERPAGE_R))
+    # pull info from he database
+    r = rfunc.get_r_data(invdb)
+    print(r)
+    # get total number of entries
+    totalRow = len(r)
+    print("LENGTH OF SL >> "+str(totalRow))
+    numEntries = 0
+    curRow = CURRENTPAGE_R*MAXPERPAGE_R
+    # Calculate the number of pages
+    NUMPAGES_R = math.ceil(totalRow/MAXPERPAGE_R)
+    print("NUMBER OF PAGES >> "+str(NUMPAGES_R))
+    Y = 0.222
+    yinc = .08
+    r_widgets = []
+    # print labels
+    print("TOTAL ROW >> "+str(totalRow))
+    for row in range(totalRow):
+        row += curRow
+        print("R ROW >> "+str(row))
+        if ((numEntries == MAXPERPAGE_R) or (row == totalRow+1)):
+            break;
+
+        button_rec_nameData = tk.Button(frame_rec_main)
+        button_rec_nameData.place(relx=0.186, rely=Y, height=30, width=350)
+        rfunc.configure_rButton(button_rec_nameData)
+        button_rec_nameData.configure(text=r[row][0])
+        sl_widgets.append(button_rec_nameData)
+        button_rec_nameData.configure(command = lambda name=r[row][0]: get_recipe(name))
+
+        label_rec_timeDate = tk.Label(frame_rec_main)
+        label_rec_timeDate.place(relx=0.586, rely=Y, height=30, width=150)
+        rfunc.configure_timeLabel(label_rec_timeDate)
+        label_rec_timeDate.configure(text=r[row][1])
+        sl_widgets.append(label_rec_timeDate)
+
+        numEntries+=1
+        Y+=.5
+def get_recipe(name):
+    print("GET RECIPE >> "+name)
+    # get recipe id
+    rID = addfunc.get_info("recipe_id", "recipe", "recipe_name", name, invdb)
+    print("RID >> "+str(rID[0][0]))
+    # pull Instructions
+    r_steps = addfunc.get_info("step_id, step", "steps","recipe_id", str(rID[0][0]), invdb)
+    # pull Ingredients
+    #r_ing = addfunc.get_info("")
+    #print("STEPS >>")
+    fill_recipe(rID[0][0])
+
+    # fill screen
+def fill_recipe(id):
+    frame_addrec.lift()
+    # pull Info
+    r = addfunc.get_info("*", "recipe", "recipe_id", id, invdb)
+    print(r)
+    r_steps = addfunc.get_info("step", "steps", "recipe_id", id, invdb)
+    print(r_steps)
+    label_recEnt_title.configure(text = r[0][1])
+    label_recEnt_time.configure(text = r[0][2])
+
+    totalRow = len(r_steps)-1
+    totalCol = len(r_steps[0])-1
+    entry = 1
+    steps = ""
+    #col = 0
+    for row in range(totalRow-1):
+            steps = steps+str(row+1)+". "+r_steps[row][0] + "\n"
+            #col+=1
+    print(steps)
+
+    label_steps.configure(text = steps)
+
 
 #----------------------------------------
 # DRIVING CODE
@@ -1187,6 +1271,15 @@ button_lastPage = tk.Button(frame_invMain)
 button_NextPage_sl= tk.Button(frame_sl_main)
 button_lastPage_sl = tk.Button(frame_sl_main)
 button_sl_delete = tk.Button(frame_sl_main)
+
+# Functional components of the Recipies
+frame_addrec = tk.Frame(canvas_base)
+label_recEnt_title = tk.Label(frame_addrec)
+label_recEnt_time = tk.Label(frame_addrec)
+button_rec_addin = tk.Button(frame_addrec)
+listbox_rec_ing = tk.Listbox(frame_addrec)
+#Llistbox_rec_ins = tk.Listbox(frame_addrec)
+label_steps = tk.Label(frame_addrec)
 
 
 # configure the separate screens
