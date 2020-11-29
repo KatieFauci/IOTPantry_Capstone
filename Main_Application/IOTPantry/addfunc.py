@@ -50,7 +50,6 @@ def get_fg_id(fg, db):
     return data[0][0]
 
 
-
 # Add an item to the INVENTORY
 def add_inv(db, itemID, fgID, name, code, UID, expDate, quan):
     c = db.cursor()
