@@ -552,12 +552,13 @@ def configure_recEntry():
     button_rec_addin.configure(pady="0")
     button_rec_addin.configure(text='''Add Ingredients To List''')
 
-    listbox_rec_ing.place(relx=0.088, rely=0.34, relheight=0.544, relwidth=0.316)
-    listbox_rec_ing.configure(background="white")
-    listbox_rec_ing.configure(cursor="fleur")
-    listbox_rec_ing.configure(disabledforeground="#a3a3a3")
-    listbox_rec_ing.configure(font="TkFixedFont")
-    listbox_rec_ing.configure(foreground="#000000")
+    label_ing_list.place(relx=0.088, rely=0.34, height=271, width=344)
+    label_ing_list.configure(background="#ffffff")
+    label_ing_list.configure(disabledforeground="#a3a3a3")
+    label_ing_list.configure(foreground="#000000")
+    label_ing_list.configure(justify='left')
+    label_ing_list.configure(text='''Ingredients''')
+    label_ing_list.configure(wraplength="300")
 
     label_steps.place(relx=0.449, rely=0.34, height=271, width=533)
     label_steps.configure(background="#ffffff")
@@ -831,6 +832,7 @@ def clear_pop():
 def clear_widgets(list_of_widgets):
     for widget in list_of_widgets:
         widget.destroy()
+
 #-------------------------------
 # Inventory Control Functions
 #-------------------------------
@@ -1022,6 +1024,7 @@ def fill_inv():
         numEntries+=1
 def show_item(name):
     print("SHOW ITEM >> "+name)
+
 #----------------------------------------
 # Shopping List Control Functions
 #----------------------------------------
@@ -1179,7 +1182,7 @@ def update_r():
         sl_widgets.append(label_rec_timeDate)
 
         numEntries+=1
-        Y+=.5
+        Y+=yinc
 def get_recipe(name):
     print("GET RECIPE >> "+name)
     # get recipe id
@@ -1191,30 +1194,42 @@ def get_recipe(name):
     #r_ing = addfunc.get_info("")
     #print("STEPS >>")
     fill_recipe(rID[0][0])
-
-    # fill screen
 def fill_recipe(id):
     frame_addrec.lift()
     # pull Info
     r = addfunc.get_info("*", "recipe", "recipe_id", id, invdb)
-    print(r)
+    #print(r)
     r_steps = addfunc.get_info("step", "steps", "recipe_id", id, invdb)
+    print("STEPS >> ")
     print(r_steps)
+    r_ingr = addfunc.get_info("ingredient, amount","ingredients", "recipe_id", id, invdb)
+    print("ING >>")
+    print(r_ingr)
     label_recEnt_title.configure(text = r[0][1])
     label_recEnt_time.configure(text = r[0][2])
 
-    totalRow = len(r_steps)-1
-    totalCol = len(r_steps[0])-1
+    totalRow_steps = len(r_steps)
+    totalRow_ingr = len(r_ingr)
+    #totalCol = len(r_steps[0])-1
     entry = 1
     steps = ""
-    #col = 0
-    for row in range(totalRow-1):
-            steps = steps+str(row+1)+". "+r_steps[row][0] + "\n"
-            #col+=1
+    ingr = ""
+    stepNum = 1
+    for row in range(totalRow_steps):
+        steps = steps+str(stepNum)+". "+r_steps[row][0] + "\n"
+        print("\n"+str(r_steps[row][0]))
+        stepNum+=1
+
+    for row in range(totalRow_ingr):
+        ingr = ingr + r_ingr[row][1] + " " + r_ingr[row][0] + "\n"
+        print("\n"+str(r_ingr[row][0]))
+
+
     print(steps)
+    print(ingr)
 
     label_steps.configure(text = steps)
-
+    label_ing_list.configure(text = ingr)
 
 #----------------------------------------
 # DRIVING CODE
@@ -1277,9 +1292,9 @@ frame_addrec = tk.Frame(canvas_base)
 label_recEnt_title = tk.Label(frame_addrec)
 label_recEnt_time = tk.Label(frame_addrec)
 button_rec_addin = tk.Button(frame_addrec)
-listbox_rec_ing = tk.Listbox(frame_addrec)
-#Llistbox_rec_ins = tk.Listbox(frame_addrec)
 label_steps = tk.Label(frame_addrec)
+label_ing_list = tk.Label(frame_addrec)
+
 
 
 # configure the separate screens
