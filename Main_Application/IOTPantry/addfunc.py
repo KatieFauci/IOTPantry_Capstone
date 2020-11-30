@@ -14,16 +14,16 @@ def get_new_id(table, db, id):
 
 #pulls an entry from the reference database based on the barcode
 def get_info(pull, table, field, code, db):
-    print("\nDATABASE >> ")
-    print(db)
-    print("\n")
+    #print("\nDATABASE >> ")
+    #print(db)
+    #print("\n")
     command = '\nSELECT '+pull+' FROM '+table+' WHERE '+str(field)+' ="'+str(code)+'";\n'
     print(command)
     c = db.cursor()
     c.execute(command)
     data = c.fetchall()
-    print("\n DATA >>>  ")
-    print(data)
+    #print("\n DATA >>>  ")
+    #print(data)
     print("\n")
     return data
 
@@ -48,7 +48,6 @@ def get_fg_id(fg, db):
     print("RAW FG >> "+str(data))
     print("\n FG ID >> "+str(data[0][0])+"\n")
     return data[0][0]
-
 
 
 # Add an item to the INVENTORY
