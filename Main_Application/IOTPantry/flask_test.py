@@ -1,23 +1,34 @@
 import sqlite3
-from flask import g
+from flask import Flask
 
 app = Flask(__name__)
-DATABASE = '/path/to/database.db'
+
 
 @app.route('/')
 def connect_db():
-    db = sqlite3.connect(DATABASE)
+    db = sqlite3.connect("inventory.db")
     return db
 
 
 @app.route('/getitems')
 def get_items():
-    db = sqlite3.connect(DATABASE)
-    command = "SELECT * FROM items;"
+    db = sqlite3.connect("inventory.db")
+    command = "SELECT product_name, num_items FROM items;"
     c = db.cursor()
     c.execute(command)
     data = c.fetchall()
-    return data
+    size = len(data)
+    st = ""
+    out = []
+    return str(data)
+    #for x in range(size):
+     #   cur = []
+     #   st = st+data[x][0]+"\n"
+      #  stt = 
+       # cur.append(st)
+        #cur.append(stt)
+        #out.append(cur)
+    #return str(out)
 
 #@app.route('/')
 #def connect_db():
