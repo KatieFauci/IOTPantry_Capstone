@@ -886,7 +886,7 @@ def scan_out(event):
         # Alert user the item was not FOUND
         label_userInst.configure(text = '''ITEM NOT FOUND''')
         label_userInst.configure(foreground = "#df0005")
-    fill_inv()
+
 def scan_in(event):
     # Get code scanned
     code = entry_code.get()
@@ -926,6 +926,7 @@ def add_inv():
     entry_code.delete(0,20)
     # Lift the inventory
     frame_invMain.lift()
+    fill_inv()
 def delete_inv():
     data = addfunc.check_inv("items", entry_barcode.get(), invdb)
     # if the items exists
