@@ -12,18 +12,13 @@ def get_new_id(table, db, id):
     return data[0][0]
 
 
-#pulls an entry from the reference database based on the barcode
+#pulls an entry from the gien database based on the fields requested
 def get_info(pull, table, field, code, db):
-    #print("\nDATABASE >> ")
-    #print(db)
-    #print("\n")
     command = '\nSELECT '+pull+' FROM '+table+' WHERE '+str(field)+' ="'+str(code)+'";\n'
     print(command)
     c = db.cursor()
     c.execute(command)
     data = c.fetchall()
-    #print("\n DATA >>>  ")
-    #print(data)
     print("\n")
     return data
 

@@ -10,6 +10,8 @@ import delfunc
 import invfunc
 import slfunc
 import rfunc
+import mysql.connector
+from mysql.connector import errorcode
 
 # GLOBAL Constants
 END = 50
@@ -43,8 +45,17 @@ NUMPAGES_R = 0
 CURRENT_R = 0
 
 # Connect to databases
-invdb = sqlite3.connect('inventory.db')
+#invdb = sqlite3.connect('inventory.db')
 refdb = sqlite3.connect('ref.db')
+
+config = {
+    'user': 'root',
+    'password': 'password',
+    'host': 'localhost',
+    'database': 'inventory',
+    'raise_on_warnings': True
+}
+invdb = mysql.connector.connect(**config)
 
 #------------------------------------
 # Screen Configuration Functions
@@ -1310,7 +1321,7 @@ def update_r():
     print(r)
     # get total number of entries
     totalRow = len(r)
-    print("LENGTH OF SL >> "+str(totalRow))
+    print("LENGTH OF R >> "+str(totalRow))
     numEntries = 0
     curRow = CURRENTPAGE_R*MAXPERPAGE_R
     # Calculate the number of pages
