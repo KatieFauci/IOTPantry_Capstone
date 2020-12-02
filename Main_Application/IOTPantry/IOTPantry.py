@@ -1027,6 +1027,7 @@ def fill_inv():
         # increment y position
         Y+=0.1
         numEntries+=1
+        check_nav_inv()
 def remove_manual(name):
     print("Remove Manualy")
     focus_delEntry()
@@ -1118,7 +1119,19 @@ def search_inv():
         # increment y position
         Y+=0.1
         numEntries+=1
-
+def check_nav_inv():
+    global CURRENTPAGE_INV
+    global NUMPAGES_INV
+    if (CURRENTPAGE_INV < NUMPAGES_INV-1):
+        #button_lastPage_sl.place(relx=0.01, rely=0.889, height=40, width=45)
+        button_NextPage_inv.place(relx=0.947, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE_INV == NUMPAGES_INV-1):
+        button_NextPage_inv.place_forget()
+    if (CURRENTPAGE_INV > 0):
+        #button_NextPage_sl.place(relx=0.947, rely=0.889, height=40, width=45)
+        button_lastPage_inv.place(relx=0.01, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE_INV == 0):
+        button_lastPage_inv.place_forget()
 #----------------------------------------
 # Shopping List Control Functions
 #----------------------------------------
@@ -1182,7 +1195,7 @@ def update_sl():
         numEntries+=1
         Y+=yinc
     # check if page number increased
-    check_nav()
+    check_nav_sl()
     print("\n------------\n")
 def add_sl():
     #get textbox input
@@ -1262,7 +1275,7 @@ def remove_sl():
     invdb.commit()
     update_sl()
     return_curScreen()
-def check_nav():
+def check_nav_sl():
     global CURRENTPAGE_SL
     global NUMPAGES_SL
     if (CURRENTPAGE_SL < NUMPAGES_SL-1):
