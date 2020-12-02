@@ -1178,7 +1178,7 @@ def update_sl():
         slfunc.configure_slEntry(label_slNotes)
         sl_widgets.append(label_slNotes)
         # Count entry
-        numEntries+=1dis
+        numEntries+=1
         Y+=yinc
     # check if page number increased
     check_nav()
