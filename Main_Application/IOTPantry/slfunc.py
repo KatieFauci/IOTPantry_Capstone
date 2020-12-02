@@ -12,7 +12,12 @@ def get_sl_data(db):
     return data
 
 def add_sl_db(db, entry, ID, note):
+    print(str(ID))
+    if (str(ID) == "None"):
+        ID = 1
+
     command = 'INSERT INTO shopping_list VALUES('+str(ID)+',"'+entry+'","'+note+'");'
+    print(command)
     c = db.cursor()
     c.execute(command)
     db.commit()

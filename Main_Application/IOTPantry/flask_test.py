@@ -40,6 +40,7 @@ def inventory():
     style = "</tbody></table><style>table,td {border: 1px solid #333;padding:5px;}thead,tfoot {background-color: #333;color: #fff;}</style>"
     table = "<table><thead><tr><th colspan="+str(2)+">Inventory</th></tr><tr><td>Product Name</td><td>Quantity</td></tr></thead><tbody>"
     for x in range(length):
+        x+=1
         pn = data[x][2]
         q = data[x][7]
         table = table + "<tr><td>"+str(pn)+"</td><td>"+str(q)+"</td></tr>"
@@ -65,7 +66,8 @@ def sl():
         style = "</tbody></table><style>table,td {border: 1px solid #333;padding:5px;}thead,tfoot {background-color: #333;color: #fff;}</style>"
         table = "<table><thead><tr><th colspan="+str(2)+">Shopping List</th></tr><tr><td>Item</td><td>Notes</td></tr></thead><tbody>"
         length = len(data)
-        for x in range(length):
+        for x in range(length-1):
+            x+=1
             i = data[x][1]
             n = data[x][2]
             table = table + "<tr><td>"+str(i)+"</td><td>"+str(n)+"</td></tr>"
