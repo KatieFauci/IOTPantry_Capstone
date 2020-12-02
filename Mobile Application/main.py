@@ -221,37 +221,47 @@ class InventoryPage(FloatLayout):
         c = invdb.cursor()
         c.execute("SELECT product_name FROM items")
         data = c.fetchall()
-        data = list(data)
+        length = len(data)
+        prod_name = []
+        for x in range(length):
+            prod_name.append(data[x][0])
 
-        data = '\n'.join(str(line)for line in data)
-        print(data)
+        prod_name = '\n'.join(str(line)for line in prod_name)
+        print(prod_name)
 
         c.execute("SELECT num_items FROM items")
         data2 = c.fetchall()
+        length2 = len(data2)
+        quant = []
+        for y in range(length2):
+            quant.append(data2[y][0])
 
 
-        data2 = '\n'.join(str(line) for line in data2)
+        quant = '\n'.join(str(line) for line in quant)
 
 
         c.execute("SELECT expiration_date FROM items")
         data3 = c.fetchall()
-        data3 = list(data3)
+        length3 = len(data3)
+        exp = []
+        for z in range(length3):
+            exp.append(data3[z][0])
 
-        data3 = '\n'.join(str(line) for line in data3)
+        exp = '\n'.join(str(line) for line in exp)
 
 
 
-        self.add_widget(Label(text=str(data),
+        self.add_widget(Label(text=str(prod_name),
                               size_hint_x= None,
                               halign= 'left',
                               valign= 'middle',
                               pos_hint={'center_x': .25},
                               padding_x=20))
 
-        self.add_widget(Label(text=str(data2),
+        self.add_widget(Label(text=str(quant),
                               pos_hint={'center_x': .55}))
 
-        self.add_widget(Label(text=str(data3),
+        self.add_widget(Label(text=str(exp),
                               pos_hint={'center_x': .75}))
 
         self.add_widget(Label())
@@ -265,10 +275,6 @@ class InventoryPage(FloatLayout):
         self.Re_Button.bind(on_press=self.ReturnBack)
         self.add_widget(Label())
         self.add_widget(self.Re_Button)
-
-
-
-
 
     def ReturnBack(self, instance):
         info1 = "Loading Inventory"
@@ -315,29 +321,39 @@ class ShoppingListPage(GridLayout):
         c = invdbshop.cursor()
         c.execute("SELECT list_id FROM shopping_list")
         data = c.fetchall()
-        data = list(data)
+        length = len(data)
+        listnum = []
+        for x in range(length):
+            listnum.append(data[x][0])
 
-        data = '\n'.join(str(line) for line in data)
+        listnum = '\n'.join(str(line) for line in listnum)
         print(data)
 
         c.execute("SELECT product_name FROM shopping_list")
         data2 = c.fetchall()
+        length = len(data2)
+        prod_name = []
+        for x in range(length):
+            prod_name.append(data2[x][0])
 
-        data2 = '\n'.join(str(line) for line in data2)
+        prod_name = '\n'.join(str(line) for line in prod_name)
 
         c.execute("SELECT notes FROM shopping_list")
         data3 = c.fetchall()
-        data3 = list(data3)
+        length = len(data3)
+        note = []
+        for x in range(length):
+            note.append(data3[x][0])
 
-        data3 = '\n'.join(str(line) for line in data3)
+        note = '\n'.join(str(line) for line in note)
 
-        self.add_widget(Label(text=str(data),
+        self.add_widget(Label(text=str(listnum),
                               pos_hint={'center_x': .25}))
 
-        self.add_widget(Label(text=str(data2),
+        self.add_widget(Label(text=str(prod_name),
                               pos_hint={'center_x': .55}))
 
-        self.add_widget(Label(text=str(data3),
+        self.add_widget(Label(text=str(note),
                               pos_hint={'center_x': .75}))
 
         self.add_widget(Label())
@@ -382,16 +398,21 @@ class RecipePage(BoxLayout):
         invdbrec = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
         c = invdbrec.cursor()
         c.execute("SELECT recipe_name FROM recipe;")
-        data = c.fetchall()
+        data4 = c.fetchall()
+        length = len(data4)
+        reci = []
+        for x in range(length):
+            reci.append(data4[x][0])
 
-        self.recipe = Button(
-            text=str(data),
-            size_hint=(.25, .46),
-            pos_hint={'right': .62})
-        self.recipe.bind(on_press=self.steps_button)
-        self.add_widget(Label())
-        self.add_widget(self.recipe)
-        self.add_widget(Label())
+        for x in range(length):
+            self.recipe = Button(
+                text=str(reci[x]),
+                size_hint=(.25, .46),
+                pos_hint={'right': .62})
+            self.recipe.bind(on_press=self.steps_button)
+            self.add_widget(Label())
+            self.add_widget(self.recipe)
+            self.add_widget(Label())
 
         self.add_widget(Label())
 
@@ -426,19 +447,25 @@ class Steps(BoxLayout):
                             bold=True))
 
         self.add_widget(Label())
-        self.add_widget(Label())
 
         invdbstep = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
         c = invdbstep.cursor()
-        c.execute("SELECT step FROM steps;")
-        data4 = c.fetchall()
+        c.execute("SELECT step FROM steps WHERE recipe_id = 1;")
+        data5 = c.fetchall()
+        length = len(data5)
+        step = []
+        for x in range(length):
+            step.append(data5[x][0])
 
-        data4 = '\n\n'.join(str(line) for line in data4)
+        step = '\n\n'.join(str(line) for line in step)
+
+        self.steps = Label(text=str(step),
+                           pos_hint={'center_x': .5})
+        self.add_widget(self.steps)
+        self.steps.bind(size=self.setting_function)
 
         self.add_widget(Label())
-        self.add_widget(Label(text=str(data4),
-                              pos_hint={'center_x': .5}))
-
+        self.add_widget(Label())
         self.add_widget(Label())
         self.add_widget(Label())
 
@@ -446,14 +473,18 @@ class Steps(BoxLayout):
                                 size_hint=(.25, .46),
                                 pos_hint={'center_x': .5})
         self.Re_Button.bind(on_press=self.ReturnBack)
+
         self.add_widget(Label())
         self.add_widget(self.Re_Button)
-        self.add_widget(Label())
         self.add_widget(Label())
 
     def ReturnBack(self, instance):
         info5 = "Loading Recipes"
         IOT_app.screen_manager.current = "Recipe Book"
+
+    def setting_function(self, *args):
+        self.steps.pos_hint = {'center_x': 0.5, 'center_y': .85}
+        self.steps.text_size = self.size
 
 
 
