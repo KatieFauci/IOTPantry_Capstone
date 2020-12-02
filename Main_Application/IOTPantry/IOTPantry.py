@@ -30,6 +30,7 @@ sl_widgets = []
 FIRSTLIST_SL = 0;
 CURRENTPAGE_SL = 0
 NUMPAGES_SL = 0
+LASTNUMPAGES_SL = 0
 MAXPERPAGE_SL = 10
 CURRENT_SL_ITEM = 0
 
@@ -1125,8 +1126,8 @@ def update_sl():
     global FIRSTLIST_SL
     global CURRENTPAGE_SL
     global NUMPAGES_SL
+    global LASTNUMPAGES_SL
     print("CURRENT PAGE >> "+str(CURRENTPAGE_SL))
-    print("FIRSTLIST_INV PAGE >> "+str(CURRENTPAGE_SL))
     if (FIRSTLIST_SL != 0):
         clear_widgets(sl_widgets)
     FIRSTLIST_SL = 1
@@ -1153,7 +1154,7 @@ def update_sl():
     for row in range(totalRow):
         row += curRow
         #print("ROW >> "+str(row))
-        print("SL ROW >> "+str(row))
+        #print("SL ROW >> "+str(row))
         if ((numEntries == MAXPERPAGE_SL) or (row+1 == totalRow+1)):
             break;
         #current_row = curInv[curRow]
@@ -1178,6 +1179,9 @@ def update_sl():
         # Count entry
         numEntries+=1
         Y+=yinc
+    # check if page number increased
+    check_nav()
+    print("\n------------\n")
 def add_sl():
     #get textbox input
     entry = entry_addShopList.get()
@@ -1220,10 +1224,12 @@ def last_page_sl():
         button_lastPage_sl.place_forget()
     update_sl()
 def clear_sl():
+    global CURRENTPAGE_SL
     command = "DELETE FROM shopping_list WHERE list_id != 0"
     c = invdb.cursor()
     c.execute(command)
     invdb.commit()
+    CURRENTPAGE_SL = 0
     update_sl()
 def add_from_rec(entry, note):
     if ((entry != "") and (entry != "Item")):
@@ -1254,6 +1260,20 @@ def remove_sl():
     invdb.commit()
     update_sl()
     return_curScreen()
+def check_nav():
+    global CURRENTPAGE_SL
+    global NUMPAGES_SL
+    if (CURRENTPAGE_SL < NUMPAGES_SL-1):
+        #button_lastPage_sl.place(relx=0.01, rely=0.889, height=40, width=45)
+        button_NextPage_sl.place(relx=0.947, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE_SL == NUMPAGES_SL-1):
+        button_NextPage_sl.place_forget()
+    if (CURRENTPAGE_SL > 0):
+        #button_NextPage_sl.place(relx=0.947, rely=0.889, height=40, width=45)
+        button_lastPage_sl.place(relx=0.01, rely=0.889, height=40, width=45)
+    if (CURRENTPAGE_SL == 0):
+        button_lastPage_sl.place_forget()
+
 
 #----------------------------------------
 # Recipies Control Functions
