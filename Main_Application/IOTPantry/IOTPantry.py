@@ -886,6 +886,7 @@ def scan_out(event):
         # Alert user the item was not FOUND
         label_userInst.configure(text = '''ITEM NOT FOUND''')
         label_userInst.configure(foreground = "#df0005")
+    fill_inv()
 def scan_in(event):
     # Get code scanned
     code = entry_code.get()
@@ -1177,7 +1178,7 @@ def update_sl():
         slfunc.configure_slEntry(label_slNotes)
         sl_widgets.append(label_slNotes)
         # Count entry
-        numEntries+=1
+        numEntries+=1dis
         Y+=yinc
     # check if page number increased
     check_nav()
