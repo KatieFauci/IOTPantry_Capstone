@@ -1124,14 +1124,14 @@ def check_nav_inv():
     global NUMPAGES_INV
     if (CURRENTPAGE_INV < NUMPAGES_INV-1):
         #button_lastPage_sl.place(relx=0.01, rely=0.889, height=40, width=45)
-        button_NextPage_inv.place(relx=0.947, rely=0.889, height=40, width=45)
+        button_NextPage.place(relx=0.947, rely=0.889, height=40, width=45)
     if (CURRENTPAGE_INV == NUMPAGES_INV-1):
-        button_NextPage_inv.place_forget()
+        button_NextPage.place_forget()
     if (CURRENTPAGE_INV > 0):
         #button_NextPage_sl.place(relx=0.947, rely=0.889, height=40, width=45)
-        button_lastPage_inv.place(relx=0.01, rely=0.889, height=40, width=45)
+        button_lastPage.place(relx=0.01, rely=0.889, height=40, width=45)
     if (CURRENTPAGE_INV == 0):
-        button_lastPage_inv.place_forget()
+        button_lastPage.place_forget()
 #----------------------------------------
 # Shopping List Control Functions
 #----------------------------------------
