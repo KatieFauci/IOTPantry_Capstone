@@ -8,18 +8,22 @@ from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
-#from kivy.config import Config
-#from kivy.uix.anchorlayout import AnchorLayout
-#from kivy.uix.floatlayout import FloatLayout
-#from kivy.lang import Builder
-#from datetime import date
-#from kivy.properties import ObjectProperty, NumericProperty
-#from kivy.properties import StringProperty
+import mysql.connector
+from mysql.connector import errorcode
 
-import sqlite3 as sql
+#import sqlite3 as sql
 
 import os
 import threading
+
+config = {
+    'user': 'root',
+    'password': 'RamR3b3l4297',
+    'host': 'localhost',
+    'database': 'inventory',
+    'raise_on_warnings': True
+}
+invdb = mysql.connector.connect(**config)
 
 #Login Screen to access personal database
 class LoginScreen(BoxLayout):
@@ -217,7 +221,7 @@ class InventoryPage(FloatLayout):
                               pos_hint={'center_x': .75, 'center_y': .85},
                               bold=True))
 
-        invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
+        #invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
         c = invdb.cursor()
         c.execute("SELECT product_name FROM items")
         data = c.fetchall()
@@ -317,8 +321,8 @@ class ShoppingListPage(GridLayout):
                               pos_hint={'center_x': .75, 'center_y': .9},
                               bold=True))
 
-        invdbshop = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
-        c = invdbshop.cursor()
+        #invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
+        c = invdb.cursor()
         c.execute("SELECT list_id FROM shopping_list")
         data = c.fetchall()
         length = len(data)
@@ -395,8 +399,8 @@ class RecipePage(BoxLayout):
                               size_hint=(1, .36),
                               bold=True))
 
-        invdbrec = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
-        c = invdbrec.cursor()
+        #invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
+        c = invdb.cursor()
         c.execute("SELECT recipe_name FROM recipe;")
         data4 = c.fetchall()
         length = len(data4)
@@ -448,8 +452,8 @@ class Steps(BoxLayout):
 
         self.add_widget(Label())
 
-        invdbstep = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
-        c = invdbstep.cursor()
+        #invdb = sql.connect('C:\\Users\\erod4\\Documents\\GitHub\\IOTPantry_Capstone\\Main_Application\\IOTPantry\\inventory.db')
+        c = invdb.cursor()
         c.execute("SELECT step FROM steps WHERE recipe_id = 1;")
         data5 = c.fetchall()
         length = len(data5)
