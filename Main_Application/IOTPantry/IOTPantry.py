@@ -50,7 +50,7 @@ refdb = sqlite3.connect('ref.db')
 
 config = {
     'user': 'root',
-    'password': 'password',
+    'password': 'RamR3b3l4297',
     'host': 'localhost',
     'database': 'inventory',
     'raise_on_warnings': True
