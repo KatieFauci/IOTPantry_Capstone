@@ -1003,7 +1003,7 @@ def fill_inv():
     for row in range(totalRow):
         row += curRow
         #print("ROW >> "+str(row))
-        if ((numEntries == MAXPERPAGE_INV) or (row == totalRow+1)):
+        if ((numEntries == MAXPERPAGE_INV) or (row == totalRow)):
             break;
         #current_row = curInv[curRow]
         # Make Item button
