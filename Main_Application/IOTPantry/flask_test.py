@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def connect_db():
-    return "THIS IS OUR DATABASE \n BUT NO OTHER PAGE WILL WORK \n I WANT TO DIE \n END IT PLEASE"
+    return "THIS IS OUR DATABASE"
 
 
 @app.route('/Recipies')
@@ -39,7 +39,7 @@ def inventory():
     length = len(data)
     style = "</tbody></table><style>table,td {border: 1px solid #333;padding:5px;}thead,tfoot {background-color: #333;color: #fff;}</style>"
     table = "<table><thead><tr><th colspan="+str(2)+">Inventory</th></tr><tr><td>Product Name</td><td>Quantity</td></tr></thead><tbody>"
-    for x in range(length):
+    for x in range(length-1):
         x+=1
         pn = data[x][2]
         q = data[x][7]
